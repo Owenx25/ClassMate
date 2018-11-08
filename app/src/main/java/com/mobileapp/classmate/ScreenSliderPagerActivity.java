@@ -1,22 +1,20 @@
 package com.mobileapp.classmate;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 
+// Need to implement tab layout for tabs
 public class ScreenSliderPagerActivity extends FragmentActivity {
-    // number of pages we can swipe to
-    private static final int NUM_PAGES = 2;
-
     // handles animation and swiping
-    private ViewPager mPager;
+    private ViewPager viewPager;
 
     // provides pages to view pager widget
-    private PagerAdapter mPagerAdapter;
+    private TabAdapter adapter;
+
+    // sets up a tab layout for viewpagers
+    private TabLayout tablayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,48 +22,26 @@ public class ScreenSliderPagerActivity extends FragmentActivity {
         setContentView(R.layout.activity_screen_slide);
 
         // Instantiate a ViewPager and a PagerAdapter.
-        mPager = (ViewPager) findViewById(R.id.pager);
-        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
-        mPager.setAdapter(mPagerAdapter);
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        tablayout = (TabLayout) findViewById(R.id.tabLayout);
+
+        adapter = new TabAdapter(getSupportFragmentManager());
+        adapter.addFragment(new ClassSelectionPageFragment(), "Class Selection");
+        adapter.addFragment(new DailyPageFragment(), "Daily");
+
+        viewPager.setAdapter(adapter);
+        tablayout.setupWithViewPager(viewPager);
     }
 
     @Override
     public void onBackPressed() {
-        if (mPager.getCurrentItem() == 0) {
+        if (viewPager.getCurrentItem() == 0) {
             // If the user is currently looking at the first step, allow the system to handle the
             // Back button. This calls finish() on this activity and pops the back stack.
             super.onBackPressed();
         } else {
             // Otherwise, select the previous step.
-            mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+            viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
         }
     }
-
-    /**
-     * A simple pager adapter that represents 2 ClassSelectionPageFragment objects, in
-     * sequence.
-     */
-    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
-        public ScreenSlidePagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            if (position == 0) {
-                return new ClassSelectionPageFragment();
-            }
-            else {
-                return new DailyPageFragment();
-            }
-        }
-
-        @Override
-        public int getCount() {
-            return NUM_PAGES;
-        }
-    }
-
-
-
 }
