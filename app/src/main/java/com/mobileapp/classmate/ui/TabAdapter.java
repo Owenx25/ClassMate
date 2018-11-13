@@ -1,4 +1,4 @@
-package com.mobileapp.classmate;
+package com.mobileapp.classmate.ui;
 
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
