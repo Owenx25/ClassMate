@@ -11,11 +11,13 @@ import android.view.View;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.mobileapp.classmate.R;
 import com.mobileapp.classmate.db.entity.Course;
 import com.mobileapp.classmate.viewmodel.MainViewModel;
+import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
 
 import java.util.List;
 
@@ -42,6 +44,7 @@ public class ClassSelectionPageFragment extends Fragment {
                 adapter.setCourses(courses);
             }
         });
+
     }
 
     @Override
