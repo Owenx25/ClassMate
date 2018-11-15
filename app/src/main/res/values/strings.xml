@@ -8,4 +8,5 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="add_course_dialog">Add Class</string>
     <string name="button_cancel">Cancel</string>
+    <string name="invalid_course">Invalid Course!</string>
 </resources>

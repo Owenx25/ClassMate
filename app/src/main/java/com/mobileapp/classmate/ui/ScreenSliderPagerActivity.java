@@ -1,59 +1,62 @@
 package com.mobileapp.classmate.ui;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Intent;
+import android.arch.lifecycle.ViewModelProviders;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.mobileapp.classmate.R;
+import com.mobileapp.classmate.db.entity.Course;
+import com.mobileapp.classmate.viewmodel.MainViewModel;
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
 import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
 
+import java.util.Date;
+
 // Need to implement tab layout for tabs
-public class ScreenSliderPagerActivity extends FragmentActivity
-        implements AddCourseDialogFragment.AddCourseDialogListener {
+public class ScreenSliderPagerActivity extends FragmentActivity {
     // handles animation and swiping
     private ViewPager viewPager;
 
-    // provides pages to view pager widget
-    private TabAdapter adapter;
-
-    // sets up a tab layout for viewpagers
-    private TabLayout tablayout;
-
+    // Floating action button for adding classes on class selection fragment
     private FloatingActionButton mFab;
+
+    private MainViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_screen_slide);
 
+
         // Instantiate a ViewPager and a PagerAdapter.
         viewPager = (ViewPager) findViewById(R.id.viewPager);
-        tablayout = (TabLayout) findViewById(R.id.tabLayout);
+        // sets up a tab layout for viewpagers
+        TabLayout tablayout = (TabLayout) findViewById(R.id.tabLayout);
 
-        adapter = new TabAdapter(getSupportFragmentManager());
+        // Set up viewPager tabs
+        // provides pages to view pager widget
+        TabAdapter mTabAdapter = new TabAdapter(getSupportFragmentManager());
         ClassSelectionPageFragment classSelectionFragment = new ClassSelectionPageFragment();
         DailyPageFragment dailyPageFragment = new DailyPageFragment();
-        adapter.addFragment(classSelectionFragment, "Class Selection");
-        adapter.addFragment(dailyPageFragment, "Daily");
+        mTabAdapter.addFragment(classSelectionFragment, "Class Selection");
+        mTabAdapter.addFragment(dailyPageFragment, "Daily");
 
-        viewPager.setAdapter(adapter);
+        viewPager.setAdapter(mTabAdapter);
         tablayout.setupWithViewPager(viewPager);
 
-//        final ColorPicker cp = new ColorPicker(this, 0,0,0);
-//        cp.enableAutoClose();
 
 
         mFab = (FloatingActionButton) findViewById(R.id.fab);
@@ -74,14 +77,10 @@ public class ScreenSliderPagerActivity extends FragmentActivity
             @Override
             public void onPageScrollStateChanged(int state) { }
         });
-        mFab.setOnClickListener(v -> {
-            showAddCourseDialog();
-        });
+        mFab.setOnClickListener(v -> showAddCourseDialog());
     }
 
     public void showAddCourseDialog() {
-
-
         LayoutInflater layoutInflater = LayoutInflater.from(this);
         View AddCourseView = layoutInflater.inflate(R.layout.dialog_addcourse, null);
         final AlertDialog alertD = new AlertDialog.Builder(this)
@@ -94,6 +93,11 @@ public class ScreenSliderPagerActivity extends FragmentActivity
         // OnClick Callbacks
         final ColorPicker cp = new ColorPicker(this, 0,0,0);
         cp.enableAutoClose();
+
+        alertD.setView(AddCourseView);
+        alertD.show();
+
+        // Show Course add dialog after color is picked
         cp.setCallback(new ColorPickerCallback() {
             @Override
             public void onColorChosen(@ColorInt int color) {
@@ -102,27 +106,37 @@ public class ScreenSliderPagerActivity extends FragmentActivity
                 colorSquare.setBackgroundColor(color);
             }
         });
+
+        // Show Color picker on color button press
         colorBtn.setOnClickListener(v -> {
             alertD.hide();
             cp.show();
         });
+
+        // Validate Course inputs and add to DB
         saveBtn.setOnClickListener(v -> {
+            // Don't let user save if
+            //  - Course is empty
+            //  - Course already exists***
+            int color = Color.TRANSPARENT;
+            View colorSquare = alertD.findViewById(R.id.color_square);
+            Drawable background = colorSquare.getBackground();
+            if (background instanceof ColorDrawable)
+                color = ((ColorDrawable)background).getColor();
 
+            if (courseInput.getText().toString().matches("")) {
+                Toast.makeText(this, R.string.invalid_course, Toast.LENGTH_SHORT).show();
+            } else {
+                viewModel.insertCourse(new Course(
+                        courseInput.getText().toString(),
+                        new Date(),
+                        color));
+                alertD.dismiss();
+            }
         });
-        cancelBtn.setOnClickListener(v -> {
-            alertD.hide();
-        });
-        alertD.setView(AddCourseView);
-        alertD.show();
-    }
 
-    @Override
-    public void onDialogPositiveClick(DialogFragment dialog) {
-
-    }
-    @Override
-    public void OnDialogNegativeClick(DialogFragment dialog) {
-
+        // Quit on cancel press
+        cancelBtn.setOnClickListener(v -> alertD.dismiss());
     }
 
     @Override

@@ -12,7 +12,7 @@ import java.util.Date;
 @TypeConverters(DateConverter.class)
 @Entity(tableName = "Classes")
 public class Course {
-    public Course(@NonNull String courseName, Date createDate, String color) {
+    public Course(@NonNull String courseName, Date createDate, int color) {
         this.courseName = courseName;
         this.color = color;
         this.createDate = createDate;
@@ -20,7 +20,7 @@ public class Course {
 
     public Course() {
         courseName = "";
-        color = "";
+        color = 0;
         createDate = new Date();
     }
 
@@ -29,5 +29,5 @@ public class Course {
 
     public String courseName;
     public Date createDate;
-    public String color;
+    public int color;
 }

@@ -1,20 +1,14 @@
 package com.mobileapp.classmate;
 
-import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.support.annotation.NonNull;
 
 import com.mobileapp.classmate.db.dao.AssignmentDao;
 import com.mobileapp.classmate.db.dao.CourseDao;
 import com.mobileapp.classmate.db.entity.Assignment;
 import com.mobileapp.classmate.db.entity.Course;
-
-import java.util.Date;
 
 @Database(entities = {Assignment.class, Course.class}, version = 1)
 public abstract class ClassmateRoomDatabase extends RoomDatabase {
@@ -29,7 +23,6 @@ public abstract class ClassmateRoomDatabase extends RoomDatabase {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                     ClassmateRoomDatabase.class, "classmate_database")
-                    //.addCallback(sRoomDatabaseCallback)
                     .build();
                 }
             }
