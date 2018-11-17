@@ -1,5 +1,6 @@
 package com.mobileapp.classmate.ui;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Color;
@@ -56,14 +57,13 @@ public class ClassSelectionPageFragment extends Fragment {
 
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         viewModel.getAllCourses().observe(this, courses -> adapter.setCourses(courses));
-
         return rootView;
     }
 
-    public void showAddCourseDialog() {
-        LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+    public void showAddCourseDialog(Activity activity) {
+        LayoutInflater layoutInflater = LayoutInflater.from(activity);
         View AddCourseView = layoutInflater.inflate(R.layout.dialog_add_course, null);
-        final AlertDialog alertD = new AlertDialog.Builder(getActivity())
+        final AlertDialog alertD = new AlertDialog.Builder(activity)
                 .setTitle(R.string.add_course_dialog)
                 .create();
         EditText courseInput = (EditText) AddCourseView.findViewById(R.id.course_name);
@@ -71,7 +71,7 @@ public class ClassSelectionPageFragment extends Fragment {
         Button saveBtn = (Button) AddCourseView.findViewById(R.id.button_addcourse_save);
         Button cancelBtn = (Button) AddCourseView.findViewById(R.id.button_addcourse_cancel);
         // OnClick Callbacks
-        final ColorPicker cp = new ColorPicker(getActivity(), 0,0,0);
+        final ColorPicker cp = new ColorPicker(activity, 0,0,0);
         cp.enableAutoClose();
 
         alertD.setView(AddCourseView);
@@ -105,7 +105,7 @@ public class ClassSelectionPageFragment extends Fragment {
                 color = ((ColorDrawable)background).getColor();
 
             if (courseInput.getText().toString().matches("")) {
-                Toast.makeText(getActivity(), R.string.invalid_course, Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, R.string.invalid_course, Toast.LENGTH_SHORT).show();
             } else {
                 viewModel.insertCourse(new Course(
                         courseInput.getText().toString(),

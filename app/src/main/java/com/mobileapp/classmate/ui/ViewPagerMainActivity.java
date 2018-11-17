@@ -1,5 +1,6 @@
 package com.mobileapp.classmate.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -60,7 +61,7 @@ public class ViewPagerMainActivity extends FragmentActivity {
             @Override
             public void onPageScrollStateChanged(int state) { }
         });
-        mFab.setOnClickListener(v -> classSelectionFragment.showAddCourseDialog());
+        mFab.setOnClickListener(v -> classSelectionFragment.showAddCourseDialog(this));
     }
 
     @Override
