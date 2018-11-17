@@ -10,7 +10,7 @@ import com.mobileapp.classmate.R;
 import com.mobileapp.classmate.viewmodel.MainViewModel;
 
 // Need to implement tab layout for tabs
-public class ScreenSliderPagerActivity extends FragmentActivity {
+public class ViewPagerMainActivity extends FragmentActivity {
     // handles animation and swiping
     private ViewPager viewPager;
 
@@ -26,9 +26,9 @@ public class ScreenSliderPagerActivity extends FragmentActivity {
 
 
         // Instantiate a ViewPager and a PagerAdapter.
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        viewPager = (ViewPager) findViewById(R.id.class_selection_view_pager);
         // sets up a tab layout for viewpagers
-        TabLayout tablayout = (TabLayout) findViewById(R.id.tabLayout);
+        TabLayout tablayout = (TabLayout) findViewById(R.id.class_selection_tabLayout);
 
         // Set up viewPager tabs
         // provides pages to view pager widget
@@ -42,7 +42,7 @@ public class ScreenSliderPagerActivity extends FragmentActivity {
         tablayout.setupWithViewPager(viewPager);
 
         // Add Class Floating action button
-        mFab = (FloatingActionButton) findViewById(R.id.fab);
+        mFab = (FloatingActionButton) findViewById(R.id.fab_add_class);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
