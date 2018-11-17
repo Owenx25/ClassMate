@@ -1,7 +1,6 @@
 package com.mobileapp.classmate.ui;
 
 import android.app.AlertDialog;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -28,7 +27,6 @@ import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
 import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
 
 import java.util.Date;
-import java.util.List;
 
 public class ClassSelectionPageFragment extends Fragment {
     private MainViewModel viewModel;
@@ -64,7 +62,7 @@ public class ClassSelectionPageFragment extends Fragment {
 
     public void showAddCourseDialog() {
         LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-        View AddCourseView = layoutInflater.inflate(R.layout.dialog_addcourse, null);
+        View AddCourseView = layoutInflater.inflate(R.layout.dialog_add_course, null);
         final AlertDialog alertD = new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.add_course_dialog)
                 .create();

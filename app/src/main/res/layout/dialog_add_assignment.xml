@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <EditText
+        android:id="@+id/assignment_name"
+        android:inputType="text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp"
+        android:hint="@string/hint_word" />
+
+    <Button
+        android:id="@+id/button_add_assignment_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_cancel"
+        android:layout_marginBottom="@dimen/big_padding"
+        android:layout_marginStart="@dimen/big_padding"
+        android:background="@android:color/transparent"
+        android:textColor="@color/colorDialogButtons"
+        android:layout_below="@+id/assignment_name"
+        android:layout_alignParentStart="true"/>
+    <Button
+        android:id="@+id/button_add_assignment_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_save"
+        android:layout_marginBottom="@dimen/big_padding"
+        android:layout_marginStart="@dimen/big_padding"
+        android:background="@android:color/transparent"
+        android:textColor="@color/colorDialogButtons"
+        android:layout_below="@+id/assignment_name"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>

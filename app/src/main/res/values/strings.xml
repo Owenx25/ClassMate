@@ -9,4 +9,6 @@
     <string name="add_course_dialog">Add Class</string>
     <string name="button_cancel">Cancel</string>
     <string name="invalid_course">Invalid Course!</string>
+    <string name="empty_course_list">No Courses!</string>
+    <string name="empty_assignment_list">No Assignments!</string>
 </resources>
