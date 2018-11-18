@@ -26,7 +26,7 @@ public interface CourseDao {
     @Update
     void updateCourses(Course... courses);
 
-    @Query("DELETE FROM Classes where courseName = :name")
+    @Query("DELETE FROM Classes WHERE courseName LIKE '%' || :name || '%'")
     void delete(String name);
 
     @Query("DELETE FROM Classes")
@@ -35,10 +35,10 @@ public interface CourseDao {
     @Query("SELECT * FROM Classes")
     LiveData<List<Course>> loadAllClasses();
 
-    // className needs to be wrapped with %(Percent signs)!!!
-    @Query("SELECT * FROM Classes WHERE courseName = :courseName")
-    Course getCourseViaName(String courseName);
+    // courseName needs to be wrapped with %(Percent) signs!!!
+    @Query("SELECT * FROM Classes WHERE courseName LIKE '%' || :course || '%'")
+    LiveData<Course> getCourseViaName(String course);
 
-    @Query("SELECT * FROM Classes WHERE color = :color")
+    @Query("SELECT * FROM Classes WHERE color =:color")
     List<Course> getCourseViaColor(int color);
 }

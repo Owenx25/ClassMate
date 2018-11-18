@@ -30,6 +30,12 @@ public class MainViewModel extends AndroidViewModel {
         return allCourses;
     }
 
+    public LiveData<Course> getCourse(String name) { return repository.getCourse(name); }
+
+    public LiveData<List<Assignment>> getCourseAssignments(String course) {
+        return repository.getCourseAssignments(course);
+    }
+
     public void insertCourse(Course course){
         repository.insertCourse(course);
     }

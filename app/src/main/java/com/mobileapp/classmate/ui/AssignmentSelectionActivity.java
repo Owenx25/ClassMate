@@ -1,22 +1,29 @@
 package com.mobileapp.classmate.ui;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.mobileapp.classmate.R;
 import com.mobileapp.classmate.db.entity.Assignment;
+import com.mobileapp.classmate.db.entity.Course;
 import com.mobileapp.classmate.viewmodel.MainViewModel;
 
 import java.util.Calendar;
@@ -31,6 +38,9 @@ public class AssignmentSelectionActivity extends AppCompatActivity {
     // Floating action button for adding assignments
     private FloatingActionButton mFab;
     private MainViewModel viewModel;
+    private Course mCourse;
+    private final AssignmentListAdapter adapter =
+            new AssignmentListAdapter(R.layout.activity_assignment_selection_layout);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +52,6 @@ public class AssignmentSelectionActivity extends AppCompatActivity {
         Bundle bundle = intent.getExtras();
         final String courseName = (String)bundle.get("courseName");
 
-        // Set toolbar title to course name
-        //android.support.v7.widget.Toolbar mActionBarToolbar =
-        //        (android.support.v7.widget.Toolbar) findViewById(R.id.assignment_selection_toolbar);
-        //setSupportActionBar(mActionBarToolbar);
-        //getSupportActionBar().setTitle(courseName);
-        getSupportActionBar().setTitle(courseName);
-
         // Add Class Floating action button
         mFab = (FloatingActionButton) findViewById(R.id.fab_add_assignment);
         mFab.show();
@@ -57,14 +60,22 @@ public class AssignmentSelectionActivity extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.assignment_selection_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Needs new adapter
-        final AssignmentListAdapter adapter =
-                new AssignmentListAdapter(R.layout.activity_assignment_selection_layout);
-
+        // Setup ViewModel and Adapter
         recyclerView.setAdapter(adapter);
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        viewModel.getAllAssignments().observe(this, assignments ->
+        viewModel.getCourseAssignments('%' + courseName + '%').observe(this, assignments ->
                 adapter.setAssignments(assignments));
+
+        // Set title and colors to match class
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(courseName);
+        final Observer<Course> courseObserver = course -> {
+            if (course != null) {
+                actionBar.setBackgroundDrawable(new ColorDrawable(course.color));
+                mFab.setBackgroundTintList(ColorStateList.valueOf(course.color));
+            }
+        };
+        viewModel.getCourse(courseName).observe(this, courseObserver);
     }
 
     private void showAddAssignmentDialog(String courseName) {
@@ -81,8 +92,9 @@ public class AssignmentSelectionActivity extends AppCompatActivity {
         saveBtn.setOnClickListener(v -> {
             // Don't let user save if
             //  - Assignment name is empty
-            //  - Assignment already exists IN CURRENT COURSE(NOT YET IMPLEMENTED)
-            if (assignmentInput.getText().toString().matches("")) {
+            //  - Assignment already exists IN CURRENT COURSE
+            if (assignmentInput.getText().toString().matches("") ||
+                    adapter.isCourse(assignmentInput.getText().toString())) {
                 Toast.makeText(this, R.string.invalid_course, Toast.LENGTH_SHORT).show();
             } else {
                 Date createDate = new Date();
@@ -106,5 +118,9 @@ public class AssignmentSelectionActivity extends AppCompatActivity {
 
         // Quit on cancel press
         cancelBtn.setOnClickListener(v -> alertD.dismiss());
+    }
+
+    private void setupRecyclerView() {
+
     }
 }

@@ -35,6 +35,14 @@ public class ClassmateRepository {
         return mAllClasses;
     }
 
+    public LiveData<List<Assignment>> getCourseAssignments(String course) {
+        return mAssignmentDao.getCourseAssignments(course);
+    }
+
+    public LiveData<Course> getCourse(String name) {
+        return mCourseDao.getCourseViaName(name);
+    }
+
     public void insertAssignment(Assignment assignment) {
         new insertAssignmentAsyncTask(mAssignmentDao).execute();
     }

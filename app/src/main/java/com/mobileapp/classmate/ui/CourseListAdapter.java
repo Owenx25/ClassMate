@@ -67,6 +67,14 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Co
         notifyDataSetChanged();
     }
 
+    public boolean isCourse(String courseName) {
+        for (Course course: mCourses) {
+            if (course.courseName.equals(courseName))
+                    return true;
+        }
+        return false;
+    }
+
     @Override
     public int getItemCount() {
         if (mCourses != null)
