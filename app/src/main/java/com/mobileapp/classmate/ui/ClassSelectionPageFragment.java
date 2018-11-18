@@ -36,12 +36,6 @@ public class ClassSelectionPageFragment extends Fragment {
     private TextView courseColor;
 
     @Override
-    public void onActivityCreated(@Nullable Bundle saveIntstanceState) {
-        super.onActivityCreated(saveIntstanceState);
-
-    }
-
-    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(

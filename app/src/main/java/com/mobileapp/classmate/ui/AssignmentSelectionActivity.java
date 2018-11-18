@@ -1,22 +1,21 @@
 package com.mobileapp.classmate.ui;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -54,8 +53,8 @@ public class AssignmentSelectionActivity extends AppCompatActivity {
 
         // Add Class Floating action button
         mFab = (FloatingActionButton) findViewById(R.id.fab_add_assignment);
-        mFab.show();
         mFab.setOnClickListener(v -> showAddAssignmentDialog(courseName));
+        mFab.show();
         // Init Recyclerview
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.assignment_selection_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -63,7 +62,7 @@ public class AssignmentSelectionActivity extends AppCompatActivity {
         // Setup ViewModel and Adapter
         recyclerView.setAdapter(adapter);
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        viewModel.getCourseAssignments('%' + courseName + '%').observe(this, assignments ->
+        viewModel.getCourseAssignments(courseName).observe(this, assignments ->
                 adapter.setAssignments(assignments));
 
         // Set title and colors to match class
@@ -71,6 +70,7 @@ public class AssignmentSelectionActivity extends AppCompatActivity {
         actionBar.setTitle(courseName);
         final Observer<Course> courseObserver = course -> {
             if (course != null) {
+                mCourse = course;
                 actionBar.setBackgroundDrawable(new ColorDrawable(course.color));
                 mFab.setBackgroundTintList(ColorStateList.valueOf(course.color));
             }
@@ -79,14 +79,19 @@ public class AssignmentSelectionActivity extends AppCompatActivity {
     }
 
     private void showAddAssignmentDialog(String courseName) {
-        LayoutInflater layoutInflater = LayoutInflater.from(this);
+        LayoutInflater layoutInflater = getLayoutInflater();
         View addAssignmentView = layoutInflater.inflate(R.layout.dialog_add_assignment, null);
         final AlertDialog alertD = new AlertDialog.Builder(this)
                 .setTitle("Add Assignment")
                 .create();
         EditText assignmentInput = (EditText) addAssignmentView.findViewById(R.id.assignment_name);
+        assignmentInput.setBackgroundTintList(ColorStateList.valueOf(mCourse.color));
+        assignmentInput.setTextColor(mCourse.color);
         Button saveBtn = (Button) addAssignmentView.findViewById(R.id.button_add_assignment_save);
         Button cancelBtn = (Button) addAssignmentView.findViewById(R.id.button_add_assignment_cancel);
+
+        alertD.setView(addAssignmentView);
+        alertD.show();
 
         // Validate Course inputs and add to DB
         saveBtn.setOnClickListener(v -> {
@@ -113,6 +118,13 @@ public class AssignmentSelectionActivity extends AppCompatActivity {
                         "",
                         ""));
                 alertD.dismiss();
+
+                // Show assignment activity after creating assignment
+                Context context = this;
+                Intent intent = new Intent(this, AssignmentDetailActivity.class);
+                intent.putExtra("courseName", courseName);
+                intent.putExtra("courseColor", mCourse.color);
+                context.startActivity(intent);
             }
         });
 

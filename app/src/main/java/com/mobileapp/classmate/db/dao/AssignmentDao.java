@@ -36,7 +36,7 @@ public interface AssignmentDao {
     LiveData<List<Assignment>> loadAllAssignments();
 
     // className needs to be wrapped with %(Percent signs)!!!
-    @Query("SELECT * FROM Assignments WHERE className LIKE :courseName")
+    @Query("SELECT * FROM Assignments WHERE className LIKE '%' || :courseName || '%'")
     LiveData<List<Assignment>> getCourseAssignments(String courseName);
 
     @Query("SELECT * FROM Assignments WHERE isComplete = 0")
@@ -48,8 +48,7 @@ public interface AssignmentDao {
     @Query("SELECT * FROM Assignments WHERE priority = :priority")
     LiveData<List<Assignment>> getPriortyAssignments(int priority);
 
-    // className needs to be wrapped with %(Percent signs)!!!
-    @Query("DELETE FROM Assignments WHERE className LIKE :className")
+    @Query("DELETE FROM Assignments WHERE className LIKE '%' || :className || '%'")
     void deleteClassAssignments(String className);
 
     @Query("UPDATE Assignments SET priority = :priority WHERE id = :id")

@@ -17,6 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.AssignmentSelectionActivity"/>
+        <activity android:name=".ui.AssignmentDetailActivity"/>
     </application>
 
 </manifest>

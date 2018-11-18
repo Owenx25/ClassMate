@@ -44,7 +44,7 @@ public class ClassmateRepository {
     }
 
     public void insertAssignment(Assignment assignment) {
-        new insertAssignmentAsyncTask(mAssignmentDao).execute();
+        new insertAssignmentAsyncTask(mAssignmentDao).execute(assignment);
     }
 
     public void insertCourse(Course course) {

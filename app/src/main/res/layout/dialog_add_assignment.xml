@@ -11,7 +11,8 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="10dp"
-        android:hint="@string/hint_word" />
+        android:textCursorDrawable="@null"
+        android:hint="@string/add_assignment_hint" />
 
     <Button
         android:id="@+id/button_add_assignment_cancel"

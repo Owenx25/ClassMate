@@ -2,13 +2,14 @@
     <string name="app_name">Classmate</string>
     <string name="action_settings">settings</string>
     <string name="empty_not_saved">Class was not saved because it is empty</string>
-    <string name="hint_word">Class Name…</string>
+    <string name="add_class_hint">Class Name…</string>
     <string name="button_save">Save</string>
     <string name="color_button">Select Color</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="add_course_dialog">Add Class</string>
     <string name="button_cancel">Cancel</string>
     <string name="invalid_course">Invalid Course!</string>
-    <string name="empty_course_list">No Courses!</string>
-    <string name="empty_assignment_list">No Assignments!</string>
+    <string name="empty_course_list">Nothing here, try adding a course!</string>
+    <string name="empty_assignment_list">Nothing here, try adding an assignment!</string>
+    <string name="add_assignment_hint">Assignment Name…</string>
 </resources>
