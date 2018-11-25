@@ -35,9 +35,11 @@ public interface CourseDao {
     @Query("SELECT * FROM Classes")
     LiveData<List<Course>> loadAllClasses();
 
-    // courseName needs to be wrapped with %(Percent) signs!!!
     @Query("SELECT * FROM Classes WHERE courseName LIKE '%' || :course || '%'")
-    LiveData<Course> getCourseViaName(String course);
+    LiveData<Course> getCourseLive(String course);
+
+    @Query("SELECT * FROM Classes WHERE courseName LIKE '%' || :course || '%'")
+    Course getCourse(String course);
 
     @Query("SELECT * FROM Classes WHERE color =:color")
     List<Course> getCourseViaColor(int color);

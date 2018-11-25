@@ -29,7 +29,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 // This activity needs to:
-//      - recieve intent data about selected class and color
+//      - receive intent data about selected class and color
 //      - call a new adapter
 //      - link to assignment specific pages
 
@@ -51,7 +51,7 @@ public class AssignmentSelectionActivity extends AppCompatActivity {
         Bundle bundle = intent.getExtras();
         final String courseName = (String)bundle.get("courseName");
 
-        // Add Class Floating action button
+        // Add Assignment Floating action button
         mFab = (FloatingActionButton) findViewById(R.id.fab_add_assignment);
         mFab.setOnClickListener(v -> showAddAssignmentDialog(courseName));
         mFab.show();
@@ -115,8 +115,9 @@ public class AssignmentSelectionActivity extends AppCompatActivity {
                         dueDate,
                         createDate,
                         false,
+                        new Date(),
                         "",
-                        ""));
+                        0));
                 alertD.dismiss();
 
                 // Show assignment activity after creating assignment
@@ -124,6 +125,7 @@ public class AssignmentSelectionActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, AssignmentDetailActivity.class);
                 intent.putExtra("courseName", courseName);
                 intent.putExtra("courseColor", mCourse.color);
+                intent.putExtra("assignmentName", assignmentInput.getText().toString());
                 context.startActivity(intent);
             }
         });

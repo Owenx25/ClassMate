@@ -13,8 +13,8 @@ import java.util.Date;
 @Entity(tableName = "Assignments")
 public class Assignment {
     public Assignment(@NonNull String name, @NonNull String className, int priority,
-                      Date dueDate,Date createDate, boolean isComplete, @NonNull String reminder,
-                      @NonNull String description){
+                      Date dueDate,Date createDate, boolean isComplete, Date reminder,
+                      @NonNull String description, int grade){
         this.name = name;
         this.className = className;
         this.priority = priority;
@@ -23,6 +23,7 @@ public class Assignment {
         this.isComplete = isComplete;
         this.reminder = reminder;
         this.description = description;
+        this.grade = grade;
     }
 
     @PrimaryKey(autoGenerate = true)
@@ -34,6 +35,7 @@ public class Assignment {
     public Date dueDate;
     public Date createDate;
     public Boolean isComplete;
-    public String reminder;
+    public Date reminder;
     public String description;
+    public int grade;
 }

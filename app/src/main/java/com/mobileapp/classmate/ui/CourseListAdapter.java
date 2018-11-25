@@ -1,6 +1,9 @@
 package com.mobileapp.classmate.ui;
 
+import android.app.AlertDialog;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -11,17 +14,18 @@ import android.widget.TextView;
 
 import com.mobileapp.classmate.R;
 import com.mobileapp.classmate.db.entity.Course;
+import com.mobileapp.classmate.viewmodel.MainViewModel;
 
 import java.util.List;
 
 public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.CourseViewHolder> {
     class CourseViewHolder extends RecyclerView.ViewHolder {
         TextView courseItemView;
+        private MainViewModel viewModel;
 
         private CourseViewHolder(View itemView) {
             super(itemView);
             courseItemView = itemView.findViewById(R.id.class_name_textView);
-
             itemView.setOnClickListener(v -> {
                 Context context = v.getContext();
                 Intent intent = new Intent(context, AssignmentSelectionActivity.class);
@@ -30,7 +34,19 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Co
             });
 
             itemView.setOnLongClickListener(v -> {
+                viewModel = ViewModelProviders.of((ViewPagerMainActivity)v.getContext())
+                        .get(MainViewModel.class);
                 // show user delete class menu
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext())
+                        .setTitle(R.string.dialog_title_delete_course);
+                builder.setPositiveButton(R.string.button_delete, (dialog, which) -> {
+                    // Delete from DB
+                    // Should also delete all Course Assignments
+                    viewModel.deleteCourse(courseItemView.getText().toString());
+                });
+                builder.setNegativeButton(R.string.button_cancel, (dialog, which) -> {});
+                AlertDialog dialog = builder.create();
+                dialog.show();
                 return true;
             });
         }

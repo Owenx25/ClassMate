@@ -9,15 +9,29 @@ import com.mobileapp.classmate.db.entity.Assignment;
 import com.mobileapp.classmate.db.dao.AssignmentDao;
 import com.mobileapp.classmate.db.entity.Course;
 import com.mobileapp.classmate.db.dao.CourseDao;
+import com.mobileapp.classmate.ui.AsyncResult;
 
 import java.util.List;
 
-public class ClassmateRepository {
+public class ClassmateRepository implements AsyncResult {
     private CourseDao mCourseDao;
     private AssignmentDao mAssignmentDao;
 
     private LiveData<List<Course>> mAllClasses;
     private LiveData<List<Assignment>> mAllAssignments;
+    private MutableLiveData<Assignment> mAssignment = new MutableLiveData<>();
+
+    @Override
+    public void asyncFinished(Assignment assignment) {
+        mAssignment.setValue(assignment);
+    }
+
+    public MutableLiveData<Assignment> getmAssignment() {
+        if (mAssignment == null) {
+            mAssignment = new MutableLiveData<Assignment>();
+        }
+        return mAssignment;
+    }
 
     public ClassmateRepository(Application application) {
         ClassmateRoomDatabase db = ClassmateRoomDatabase.getDatabase(application);
@@ -40,7 +54,17 @@ public class ClassmateRepository {
     }
 
     public LiveData<Course> getCourse(String name) {
-        return mCourseDao.getCourseViaName(name);
+        return mCourseDao.getCourseLive(name);
+    }
+
+    public LiveData<Assignment> getAssignment(String courseName, String name) {
+        return mAssignmentDao.getAssignment(courseName, name);
+    }
+
+    public void getMutableAssignment(String courseName, String name) {
+        getAssignmentAsyncTask task = new getAssignmentAsyncTask(mAssignmentDao);
+        task.delegate = this;
+        task.execute(courseName, name);
     }
 
     public void insertAssignment(Assignment assignment) {
@@ -51,9 +75,15 @@ public class ClassmateRepository {
         new insertCourseAsyncTask(mCourseDao).execute(course);
     }
 
+    public void updateAssignment(Assignment assignment) {
+        new updateAssignmentAsyncTask(mAssignmentDao).execute(assignment);
+    }
+
     public void deleteCourse(String name) {
         new deleteCourseAsyncTask(mCourseDao).execute(name);
+        new deleteCourseAssignmentsAsyncTask(mAssignmentDao).execute(name);
     }
+
 
     public void deleteAssignment(String courseName, String assignName) {
         new deleteAssignmentAsyncTask(mAssignmentDao).execute(courseName, assignName);
@@ -118,5 +148,56 @@ public class ClassmateRepository {
             asyncCourseDao.delete(params[0]);
             return null;
         }
+    }
+
+    // Delete a course on a separate thread
+    private static class deleteCourseAssignmentsAsyncTask extends AsyncTask<String, Void, Void> {
+        private AssignmentDao asyncAssigmentDao;
+
+        deleteCourseAssignmentsAsyncTask(AssignmentDao dao) {
+            asyncAssigmentDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final String... params) {
+            asyncAssigmentDao.deleteClassAssignments(params[0]);
+            return null;
+        }
+    }
+
+    // Delete a course on a separate thread
+    private static class updateAssignmentAsyncTask extends AsyncTask<Assignment, Void, Void> {
+        private AssignmentDao asyncAssignmentDao;
+
+        updateAssignmentAsyncTask(AssignmentDao dao) {
+            asyncAssignmentDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final Assignment... params) {
+            asyncAssignmentDao.updateAssignment(params[0]);
+            return null;
+        }
+    }
+
+    // Get Assignment on a seperate thread
+    private static class getAssignmentAsyncTask extends AsyncTask<String, Void, Assignment> {
+        private AssignmentDao asyncAssignmentDao;
+        private ClassmateRepository delegate = null;
+
+        getAssignmentAsyncTask(AssignmentDao dao) {
+            asyncAssignmentDao = dao;
+        }
+
+        @Override
+        protected void onPostExecute(Assignment result) {
+            delegate.asyncFinished(result);
+        }
+
+        @Override
+        protected Assignment doInBackground(final String... params) {
+            return asyncAssignmentDao.getMutableAssignment(params[0], params[1]);
+        }
+
     }
 }

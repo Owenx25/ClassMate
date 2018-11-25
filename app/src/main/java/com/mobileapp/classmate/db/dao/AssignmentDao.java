@@ -1,6 +1,7 @@
 package com.mobileapp.classmate.db.dao;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -24,13 +25,19 @@ public interface AssignmentDao {
     void updateAssignments(Assignment... assignments);
 
     @Update
-    void updateAssignement(Assignment assignment);
+    void updateAssignment(Assignment assignment);
 
     @Query("DELETE FROM Assignments WHERE className = :courseName AND name = :assignName")
     void delete(String courseName, String assignName);
 
     @Query("DELETE FROM Assignments")
     void deleteAll();
+
+    @Query("SELECT * FROM Assignments WHERE className LIKE '%' || :courseName || '%' AND name LIKE '%' || :name || '%'")
+    LiveData<Assignment> getAssignment(String courseName, String name);
+
+    @Query("SELECT * FROM Assignments WHERE className LIKE '%' || :courseName || '%' AND name LIKE '%' || :name || '%'")
+    Assignment getMutableAssignment(String courseName, String name);
 
     @Query("SELECT * FROM Assignments ORDER BY className ASC")
     LiveData<List<Assignment>> loadAllAssignments();

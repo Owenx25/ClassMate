@@ -12,4 +12,16 @@
     <string name="empty_course_list">Nothing here, try adding a course!</string>
     <string name="empty_assignment_list">Nothing here, try adding an assignment!</string>
     <string name="add_assignment_hint">Assignment Name…</string>
+    <string name="assignment_complete">Mark Complete</string>
+    <string name="empty_description">No Description yet.</string>
+    <string name="set">Set</string>
+    <string-array name="priority_array">
+        <item>TOP</item>
+        <item>HIGH</item>
+        <item>MEDIUM</item>
+        <item>LOW</item>
+        <item>BOTTOM</item>
+    </string-array>
+    <string name="dialog_title_delete_course">Delete Course?</string>
+    <string name="button_delete">Delete</string>
 </resources>

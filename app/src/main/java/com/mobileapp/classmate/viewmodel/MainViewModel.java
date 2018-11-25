@@ -3,6 +3,8 @@ package com.mobileapp.classmate.viewmodel;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Transformations;
 
 import com.mobileapp.classmate.ClassmateRepository;
 import com.mobileapp.classmate.db.entity.Assignment;
@@ -14,6 +16,36 @@ public class MainViewModel extends AndroidViewModel {
     private ClassmateRepository repository;
     private LiveData<List<Assignment>> allAssignments;
     private LiveData<List<Course>> allCourses;
+
+
+    private MutableLiveData<List<Assignment>> assignments;
+    private MutableLiveData<List<Course>> courses;
+    public LiveData<List<Course>> getCourses() {
+        if (courses == null) {
+            courses = new MutableLiveData<List<Course>>();
+            loadCourses();
+        }
+        return courses;
+    }
+    private void loadCourses() {
+
+        //ourses.setValue(repository.getAllCourses());
+    }
+
+//    private final MutableLiveData<String> assignmentInput = new MutableLiveData<>();
+//    private final MutableLiveData<String> courseInput = new MutableLiveData<>();
+//
+//    public final LiveData<Assignment> assignment =
+//            Transformations.switchMap(courseInput, assignmentInput, (c, a) -> {
+//               return repository.getAssignment(c, a);
+//            });
+//
+//    private void setAssignnmentInput(String assignmentName) {
+//        assignmentInput.setValue(assignmentName);
+//    }
+
+
+
 
     public MainViewModel(Application application) {
         super(application);
@@ -32,8 +64,24 @@ public class MainViewModel extends AndroidViewModel {
 
     public LiveData<Course> getCourse(String name) { return repository.getCourse(name); }
 
+    public LiveData<Assignment> getAssignmentLive(String courseName, String name) {
+        return repository.getAssignment(courseName, name);
+    }
+
+    public LiveData<Assignment> getAssignment(String courseName, String name) {
+        return repository.getAssignment(courseName, name);
+    }
+
+    public void getMutableAssignment(String courseName, String name) {
+        repository.getMutableAssignment(courseName, name);
+    }
+
     public LiveData<List<Assignment>> getCourseAssignments(String course) {
         return repository.getCourseAssignments(course);
+    }
+
+    public void updateAssignment(Assignment assignment) {
+        repository.updateAssignment(assignment);
     }
 
     public void insertCourse(Course course){
