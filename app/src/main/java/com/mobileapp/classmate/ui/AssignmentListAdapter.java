@@ -32,10 +32,10 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
 
     @Override
     @NonNull
-    public AssignmentListAdapter.AssignmentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AssignmentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.assignment_selection_item, parent, false);
-        return new AssignmentListAdapter.AssignmentViewHolder(itemView);
+        return new AssignmentViewHolder(itemView);
     }
 
     @Override

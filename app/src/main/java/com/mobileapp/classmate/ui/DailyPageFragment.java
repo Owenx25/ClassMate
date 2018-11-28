@@ -35,13 +35,17 @@ public class DailyPageFragment extends Fragment {
                 .findViewById(R.id.assignment_selection_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        final AssignmentListAdapter adapter = new AssignmentListAdapter(R.layout.daily_layout);
+
         // Setup ViewModel and Adapter
         recyclerView.setAdapter(adapter);
-        /* Commented out because this will display assignments only from "chemistry" class
-           should be fixed to use getAllAssignments() once implemented */
-        //viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        //viewModel.getCourseAssignments("chemistry").observe(this, assignments -> adapter.setAssignments(assignments));
+        /* Currently will display all assignments, need
+            to finish filtering by date*/
+
+        viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel.getAllAssignments().observe(this, assignments -> adapter.setAssignments(assignments));
         return rootView;
+
     }
 
 }

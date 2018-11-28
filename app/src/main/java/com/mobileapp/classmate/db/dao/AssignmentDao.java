@@ -11,7 +11,10 @@ import android.arch.persistence.room.Update;
 
 import com.mobileapp.classmate.db.entity.Assignment;
 
+import java.sql.Date;
 import java.util.List;
+
+
 
 @Dao
 public interface AssignmentDao {
@@ -63,4 +66,7 @@ public interface AssignmentDao {
 
     @Query("SELECT * FROM Assignments WHERE dueDate <= datetime('now','now','+1 day')")
     List<Assignment> getDueTommorow();
+
+   // @Query("SELECT * FROM Assignments WHERE createDate >= :start AND dueDate <= :end AND NOT isComplete")
+   // List<Assignment> getDueWithin(Date start, Date end);
 }

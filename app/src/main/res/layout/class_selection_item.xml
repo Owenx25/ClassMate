@@ -8,8 +8,10 @@
         android:id="@+id/class_name_textView"
         android:layout_width="match_parent"
         android:textAppearance="@color/colorPrimary"
+        android:typeface="serif"
         android:textSize="30sp"
         android:layout_height="wrap_content"
         android:background="@drawable/back"
+        android:gravity="center"
         android:layout_margin="@dimen/smallest_padding"/>
 </LinearLayout>
