@@ -5,11 +5,13 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mobileapp.classmate.R;
@@ -21,11 +23,13 @@ import java.util.List;
 public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.CourseViewHolder> {
     class CourseViewHolder extends RecyclerView.ViewHolder {
         TextView courseItemView;
+        LinearLayout courseItemViewBorder;
         private MainViewModel viewModel;
 
         private CourseViewHolder(View itemView) {
             super(itemView);
             courseItemView = itemView.findViewById(R.id.class_name_textView);
+            courseItemViewBorder = itemView.findViewById(R.id.class_name_textView_border);
             itemView.setOnClickListener(v -> {
                 Context context = v.getContext();
                 Intent intent = new Intent(context, AssignmentSelectionActivity.class);
@@ -72,6 +76,7 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Co
         if (mCourses != null) {
             Course current = mCourses.get(position);
             holder.courseItemView.setText(current.courseName);
+            holder.courseItemViewBorder.setBackgroundColor(current.color);
         } else {
             // If there's no data
             holder.courseItemView.setText("No Courses!");

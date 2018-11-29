@@ -3,15 +3,24 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:longClickable="true">
-
-    <TextView
-        android:id="@+id/class_name_textView"
+    <LinearLayout
+        android:id="@+id/class_name_textView_border"
         android:layout_width="match_parent"
-        android:textAppearance="@color/colorPrimary"
-        android:typeface="serif"
-        android:textSize="30sp"
         android:layout_height="wrap_content"
-        android:background="@drawable/back"
-        android:gravity="center"
-        android:layout_margin="@dimen/smallest_padding"/>
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="3dip"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/class_name_textView"
+            android:layout_width="fill_parent"
+            android:textAppearance="@color/colorBlack"
+            android:typeface="serif"
+            android:textSize="30sp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/back"
+            android:gravity="center"
+            android:layout_margin="@dimen/smallest_padding"/>
+    </LinearLayout>
 </LinearLayout>
+
+

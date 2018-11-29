@@ -11,7 +11,10 @@ import com.mobileapp.classmate.db.entity.Course;
 import com.mobileapp.classmate.db.dao.CourseDao;
 import com.mobileapp.classmate.ui.AsyncResult;
 
+
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Date;
 
 public class ClassmateRepository implements AsyncResult {
     private CourseDao mCourseDao;
@@ -19,8 +22,8 @@ public class ClassmateRepository implements AsyncResult {
 
     private LiveData<List<Course>> mAllClasses;
     private LiveData<List<Assignment>> mAllAssignments;
+    private LiveData<List<Assignment>> mTomorrowAssignments;
     private MutableLiveData<Assignment> mAssignment = new MutableLiveData<>();
-
     @Override
     public void asyncFinished(Assignment assignment) {
         mAssignment.setValue(assignment);
@@ -38,6 +41,7 @@ public class ClassmateRepository implements AsyncResult {
         mCourseDao = db.courseDao();
         mAssignmentDao = db.assignmentDao();
         mAllAssignments = mAssignmentDao.loadAllAssignments();
+        mTomorrowAssignments = mAssignmentDao.getDueTomorrow(new java.sql.Date((new Date()).getTime() + 86400001).toString());
         mAllClasses = mCourseDao.loadAllClasses();
     }
 
@@ -59,6 +63,10 @@ public class ClassmateRepository implements AsyncResult {
 
     public LiveData<Assignment> getAssignment(String courseName, String name) {
         return mAssignmentDao.getAssignment(courseName, name);
+    }
+
+    public LiveData<List<Assignment>> getTomorrowAssignments() {
+        return mTomorrowAssignments;
     }
 
     public void getMutableAssignment(String courseName, String name) {

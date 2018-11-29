@@ -43,7 +43,7 @@ public class DailyPageFragment extends Fragment {
             to finish filtering by date*/
 
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        viewModel.getAllAssignments().observe(this, assignments -> adapter.setAssignments(assignments));
+        viewModel.getTomorrowAssignments().observe(this, assignments -> adapter.setAssignments(assignments));
         return rootView;
 
     }

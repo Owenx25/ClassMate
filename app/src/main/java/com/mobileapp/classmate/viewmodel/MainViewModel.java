@@ -16,6 +16,7 @@ public class MainViewModel extends AndroidViewModel {
     private ClassmateRepository repository;
     private LiveData<List<Assignment>> allAssignments;
     private LiveData<List<Course>> allCourses;
+    private LiveData<List<Assignment>> tomorrowAssignments;
 
 
     private MutableLiveData<List<Assignment>> assignments;
@@ -51,11 +52,16 @@ public class MainViewModel extends AndroidViewModel {
         super(application);
         repository = new ClassmateRepository(application);
         allAssignments = repository.getAllAssignments();
+        tomorrowAssignments = repository.getTomorrowAssignments();
         allCourses = repository.getAllCourses();
     }
 
     public LiveData<List<Assignment>> getAllAssignments() {
         return allAssignments;
+    }
+
+    public LiveData<List<Assignment>> getTomorrowAssignments() {
+        return tomorrowAssignments;
     }
 
     public LiveData<List<Course>> getAllCourses() {

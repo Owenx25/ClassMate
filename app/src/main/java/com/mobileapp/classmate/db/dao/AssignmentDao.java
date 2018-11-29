@@ -64,8 +64,9 @@ public interface AssignmentDao {
     @Query("UPDATE Assignments SET priority = :priority WHERE id = :id")
     void updateAssignmentPriority(int id, int priority);
 
-    @Query("SELECT * FROM Assignments WHERE dueDate <= datetime('now','now','+1 day')")
-    List<Assignment> getDueTommorow();
+    //@Query("SELECT * FROM Assignments WHERE dueDate <= datetime('now','now','+1 day')")
+    @Query("SELECT * FROM Assignments WHERE dueDate <= :due")
+    LiveData<List<Assignment>> getDueTomorrow(String due);
 
    // @Query("SELECT * FROM Assignments WHERE createDate >= :start AND dueDate <= :end AND NOT isComplete")
    // List<Assignment> getDueWithin(Date start, Date end);
