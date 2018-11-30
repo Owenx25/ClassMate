@@ -78,10 +78,26 @@ public class AssignmentDetailActivity extends AppCompatActivity
                 mAssignment = assignment;
             }
         };
-       viewModel.getAssignment(courseName, assignmentName)
+        viewModel.getCurrentAssignment()
                 .observe(this, assignmentObserver);
-       viewModel.getMutableAssignment(courseName, assignmentName);
+        Date createDate = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(createDate);
+        c.add(Calendar.DATE, 1);
+        Date dueDate = c.getTime();
 
+        mAssignment = new Assignment(
+                assignmentName,
+                courseName,
+                3,
+                dueDate,
+                createDate,
+                false,
+                new Date(),
+                "",
+                0);
+        viewModel.insertAssignment(mAssignment);
+        viewModel.getCurrentAssignment().setValue(mAssignment);
 
         mDesc = findViewById(R.id.etext_desc);
         mDesc.setFocusable(false);
@@ -223,7 +239,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
 
     public void setupGrade() {
         // Set Text from DB
-        mGrade.setText(mAssignment.grade);
+        mGrade.setText(String.valueOf(mAssignment.grade));
         mGrade.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }

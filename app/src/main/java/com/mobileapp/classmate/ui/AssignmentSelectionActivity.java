@@ -102,22 +102,7 @@ public class AssignmentSelectionActivity extends AppCompatActivity {
                     adapter.isCourse(assignmentInput.getText().toString())) {
                 Toast.makeText(this, R.string.invalid_course, Toast.LENGTH_SHORT).show();
             } else {
-                Date createDate = new Date();
-                Calendar c = Calendar.getInstance();
-                c.setTime(createDate);
-                c.add(Calendar.DATE, 1);
-                Date dueDate = c.getTime();
 
-                viewModel.insertAssignment(new Assignment(
-                        assignmentInput.getText().toString(),
-                        courseName,
-                        3,
-                        dueDate,
-                        createDate,
-                        false,
-                        new Date(),
-                        "",
-                        0));
                 alertD.dismiss();
 
                 // Show assignment activity after creating assignment

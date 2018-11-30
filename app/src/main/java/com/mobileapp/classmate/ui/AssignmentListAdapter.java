@@ -1,5 +1,9 @@
 package com.mobileapp.classmate.ui;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,17 +13,38 @@ import android.widget.TextView;
 
 import com.mobileapp.classmate.R;
 import com.mobileapp.classmate.db.entity.Assignment;
+import com.mobileapp.classmate.viewmodel.MainViewModel;
 
 import java.util.List;
 
 public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAdapter.AssignmentViewHolder> {
     class AssignmentViewHolder extends RecyclerView.ViewHolder {
         TextView assignmentItemView;
+        private MainViewModel viewModel;
 
 
         private AssignmentViewHolder(View itemView) {
             super(itemView);
             assignmentItemView = itemView.findViewById(R.id.assignment_name_textView);
+
+            itemView.setOnLongClickListener(v -> {
+                viewModel = ViewModelProviders.of((AssignmentSelectionActivity)v.getContext())
+                        .get(MainViewModel.class);
+                Intent intent = ((Activity)v.getContext()).getIntent();
+                String courseName = intent.getStringExtra("courseName");
+                // show user delete class menu
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext())
+                        .setTitle(R.string.dialog_title_delete_assignment);
+                builder.setPositiveButton(R.string.button_delete, (dialog, which) -> {
+                    // Delete from DB
+                    // Should also delete all Course Assignments
+                    viewModel.deleteAssignment(courseName, assignmentItemView.getText().toString());
+                });
+                builder.setNegativeButton(R.string.button_cancel, (dialog, which) -> {});
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                return true;
+            });
         }
     }
 

@@ -11,6 +11,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/title_description"
+                android:textStyle="bold"/>
             <EditText
                 android:id="@+id/etext_desc"
                 android:layout_width="match_parent"

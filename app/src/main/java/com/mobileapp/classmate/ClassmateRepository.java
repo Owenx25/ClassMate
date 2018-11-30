@@ -69,10 +69,8 @@ public class ClassmateRepository implements AsyncResult {
         return mTomorrowAssignments;
     }
 
-    public void getMutableAssignment(String courseName, String name) {
-        getAssignmentAsyncTask task = new getAssignmentAsyncTask(mAssignmentDao);
-        task.delegate = this;
-        task.execute(courseName, name);
+    public Assignment getMutableAssignment(String courseName, String name) {
+        return mAssignmentDao.getMutableAssignment(courseName, name);
     }
 
     public void insertAssignment(Assignment assignment) {
