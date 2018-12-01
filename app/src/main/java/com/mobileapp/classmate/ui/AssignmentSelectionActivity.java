@@ -50,6 +50,7 @@ public class AssignmentSelectionActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         final String courseName = (String)bundle.get("courseName");
+        final int color = (int)bundle.get("courseColor");
 
         // Add Assignment Floating action button
         mFab = (FloatingActionButton) findViewById(R.id.fab_add_assignment);
@@ -111,15 +112,12 @@ public class AssignmentSelectionActivity extends AppCompatActivity {
                 intent.putExtra("courseName", courseName);
                 intent.putExtra("courseColor", mCourse.color);
                 intent.putExtra("assignmentName", assignmentInput.getText().toString());
+                intent.putExtra("adding", true);
                 context.startActivity(intent);
             }
         });
 
         // Quit on cancel press
         cancelBtn.setOnClickListener(v -> alertD.dismiss());
-    }
-
-    private void setupRecyclerView() {
-
     }
 }

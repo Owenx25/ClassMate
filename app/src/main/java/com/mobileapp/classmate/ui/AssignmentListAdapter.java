@@ -1,9 +1,12 @@
 package com.mobileapp.classmate.ui;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -27,6 +30,24 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
             super(itemView);
             assignmentItemView = itemView.findViewById(R.id.assignment_name_textView);
 
+            // Open up assignment detail activity
+            itemView.setOnClickListener(v -> {
+                Intent currentIntent = ((Activity)v.getContext()).getIntent();
+                Bundle bundle = currentIntent.getExtras();
+                final String courseName = (String)bundle.get("courseName");
+                final int courseColor = (int)bundle.get("courseColor");
+
+                Context context = v.getContext();
+                Intent intent = new Intent(context, AssignmentDetailActivity.class);
+                intent.putExtra("courseName", courseName);
+                // Color is not part of Assignment List activity...
+                intent.putExtra("courseColor", courseColor);
+                intent.putExtra("assignmentName", assignmentItemView.getText().toString());
+                intent.putExtra("adding", false);
+                context.startActivity(intent);
+            });
+
+            // Allow user to delete assignment on long click
             itemView.setOnLongClickListener(v -> {
                 viewModel = ViewModelProviders.of((AssignmentSelectionActivity)v.getContext())
                         .get(MainViewModel.class);

@@ -24,7 +24,12 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Co
     class CourseViewHolder extends RecyclerView.ViewHolder {
         TextView courseItemView;
         LinearLayout courseItemViewBorder;
+        private int mColor;
         private MainViewModel viewModel;
+
+        public void setColor(int color) {
+            mColor = color;
+        }
 
         private CourseViewHolder(View itemView) {
             super(itemView);
@@ -34,6 +39,7 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Co
                 Context context = v.getContext();
                 Intent intent = new Intent(context, AssignmentSelectionActivity.class);
                 intent.putExtra("courseName", courseItemView.getText().toString());
+                intent.putExtra("courseColor", mColor);
                 context.startActivity(intent);
             });
 
@@ -77,6 +83,7 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Co
             Course current = mCourses.get(position);
             holder.courseItemView.setText(current.courseName);
             holder.courseItemViewBorder.setBackgroundColor(current.color);
+            holder.setColor(current.color);
         } else {
             // If there's no data
             holder.courseItemView.setText("No Courses!");

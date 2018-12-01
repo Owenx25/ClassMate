@@ -3,6 +3,7 @@ package com.mobileapp.classmate.ui;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -32,8 +33,7 @@ import java.util.Date;
 public class ClassSelectionPageFragment extends Fragment {
     private MainViewModel viewModel;
 
-    private TextView courseName;
-    private TextView courseColor;
+    private int courseColor;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,

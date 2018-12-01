@@ -17,7 +17,7 @@ public class MainViewModel extends AndroidViewModel {
     private LiveData<List<Assignment>> allAssignments;
     private LiveData<List<Course>> allCourses;
     private LiveData<List<Assignment>> tomorrowAssignments;
-    public MutableLiveData<Assignment> currentAssignment;
+    private MutableLiveData<Assignment> currentAssignment;
 
     public MainViewModel(Application application) {
         super(application);
@@ -41,17 +41,26 @@ public class MainViewModel extends AndroidViewModel {
 
     public LiveData<Course> getCourse(String name) { return repository.getCourse(name); }
 
-    public MutableLiveData<Assignment> getCurrentAssignment() {
+    public LiveData<Assignment> getCurrentAssignment(String courseName, String name) {
         if (currentAssignment == null) {
-            currentAssignment = new MutableLiveData<Assignment>();
+            currentAssignment = new MutableLiveData<>();
         }
         return currentAssignment;
     }
 
+    public LiveData<Assignment> getAssignment(String courseName, String name) {
+//        currentAssignment.setValue(
+//                repository.getAssignment(courseName, name).getValue());
+        return repository.getAssignment(courseName, name);
+    }
 
     public LiveData<List<Assignment>> getCourseAssignments(String course) {
         return repository.getCourseAssignments(course);
     }
+
+//    public int getCourseColor(String courseName) {
+//        return repository.getCourseColor(courseName);
+//    }
 
     public void updateAssignment(Assignment assignment) {
         repository.updateAssignment(assignment);

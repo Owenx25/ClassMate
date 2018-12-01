@@ -9,8 +9,10 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.arch.persistence.room.PrimaryKey;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.hardware.input.InputManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -19,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -52,6 +55,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
     boolean isEditing = false;
     private EditText mDesc;
     private EditText mGrade;
+    private Button setReminderButton;
 
     private MainViewModel viewModel;
     private Assignment mAssignment;
@@ -72,6 +76,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
         final String courseName = (String)bundle.get("courseName");
         final int courseColor = (int)bundle.get("courseColor");
         final String assignmentName = (String)bundle.get("assignmentName");
+        final Boolean isNewAssignment = (Boolean)bundle.get("adding");
 
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         // Pull Assignment Information by using entry with
@@ -80,33 +85,63 @@ public class AssignmentDetailActivity extends AppCompatActivity
             if (assignment != null) {
                 // Data should get updated when an assignment is added
                 mAssignment = assignment;
+                setupDescription();
+                // Need Dialogs
+                setupDueDate();
+                setupPriority();
+                setupReminder();
+                setupCreateDate();
+                setupGrade();
+                // set title colors
+                TextView title = findViewById(R.id.title_create_date);
+                title.setTextColor(courseColor);
+                title = findViewById(R.id.title_description);
+                title.setTextColor(courseColor);
+                title = findViewById(R.id.title_due_date);
+                title.setTextColor(courseColor);
+                title = findViewById(R.id.title_grade);
+                title.setTextColor(courseColor);
+                title = findViewById(R.id.title_priority);
+                title.setTextColor(courseColor);
+                title = findViewById(R.id.title_reminder);
+                title.setTextColor(courseColor);
+                // set action bar
+                ActionBar actionBar = getSupportActionBar();
+                actionBar.setTitle(mAssignment.name);
+                actionBar.setBackgroundDrawable(new ColorDrawable(courseColor));
             }
         };
-        viewModel.getCurrentAssignment()
+        viewModel.getAssignment(courseName, assignmentName)
                 .observe(this, assignmentObserver);
-        Date createDate = new Date();
-        Calendar c = Calendar.getInstance();
-        c.setTime(createDate);
-        c.add(Calendar.DATE, 1);
-        Date dueDate = c.getTime();
 
-        mAssignment = new Assignment(
-                assignmentName,
-                courseName,
-                3,
-                dueDate,
-                createDate,
-                false,
-                new Date(),
-                "",
-                0);
-        viewModel.insertAssignment(mAssignment);
-        viewModel.getCurrentAssignment().setValue(mAssignment);
+        // Should only create when coming from add dialog
+        if (isNewAssignment) {
+            Date createDate = new Date();
+            Calendar c = Calendar.getInstance();
+            c.setTime(createDate);
+            c.add(Calendar.DATE, 1);
+            Date dueDate = c.getTime();
+            mAssignment = new Assignment(
+                    assignmentName,
+                    courseName,
+                    3,
+                    dueDate,
+                    createDate,
+                    false,
+                    new Date(),
+                    "",
+                    0);
+            viewModel.insertAssignment(mAssignment);
+        } else {
+            viewModel.getAssignment(courseName, assignmentName);
+        }
 
         mDesc = findViewById(R.id.etext_desc);
         mDesc.setFocusable(false);
         mGrade = findViewById(R.id.text_grade);
         mGrade.setFocusable(false);
+        setReminderButton = findViewById(R.id.button_set_reminder);
+        setReminderButton.setEnabled(false);
         // Add Class Floating action button
         mFab = (FloatingActionButton) findViewById(R.id.fab_edit_assignment);
         mFab.setOnClickListener(v -> {
@@ -118,14 +153,20 @@ public class AssignmentDetailActivity extends AppCompatActivity
                 // Enable Desc EditText
                 mDesc.setFocusableInTouchMode(true);
                 mGrade.setFocusableInTouchMode(true);
+                setReminderButton.setEnabled(true);
                 isEditing = true;
             }
             else {
                 // Change FAB back to edit(pencil)
                 mFab.setImageResource(R.drawable.ic_edit_white_24dp);
                 // Disable Description
+                mDesc.clearFocus();
                 mDesc.setFocusable(false);
+                mGrade.clearFocus();
                 mGrade.setFocusable(false);
+                setReminderButton.setEnabled(false);
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(mFab.getWindowToken(), 0);
                 /* !!! NEED TO SEND NEW DATA TO DB HERE !!! */
                 viewModel.updateAssignment(mAssignment);
                 isEditing = false;
@@ -133,37 +174,18 @@ public class AssignmentDetailActivity extends AppCompatActivity
         });
         mFab.show();
 
-        setupDescription();
-        // Need Dialogs
-        setupDueDate();
-        setupPriority();
-        setupReminder();
-        setupCreateDate();
-        setupGrade();
-        // set title colors
-        TextView title = findViewById(R.id.title_create_date);
-        title.setTextColor(courseColor);
-        title = findViewById(R.id.title_description);
-        title.setTextColor(courseColor);
-        title = findViewById(R.id.title_due_date);
-        title.setTextColor(courseColor);
-        title = findViewById(R.id.title_grade);
-        title.setTextColor(courseColor);
-        title = findViewById(R.id.title_priority);
-        title.setTextColor(courseColor);
-        title = findViewById(R.id.title_reminder);
-        title.setTextColor(courseColor);
-        // set action bar
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(mAssignment.name);
-        actionBar.setBackgroundDrawable(new ColorDrawable(courseColor));
+
+    }
+
+    private void setupListeners() {
+
     }
 
     private void setupDescription() {
         // Set Text from DB
         mDesc.setText(mAssignment.description);
         if (mDesc.getText().toString().matches("")) {
-            mDesc.setText(R.string.empty_description);
+            mDesc.setHint(R.string.empty_description);
         }
         mDesc.addTextChangedListener(new TextWatcher() {
             @Override
@@ -183,7 +205,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
     private void setupDueDate() {
         // Set Due Date from database
         final TextView DueDateText = findViewById(R.id.text_due_date);
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/mm/yyyy", Locale.US);
+        SimpleDateFormat formatter = new SimpleDateFormat("mm/dd/yyyy", Locale.US);
         String formattedDate = formatter.format(mAssignment.dueDate);
         DueDateText.setText(formattedDate);
         Calendar calendar = Calendar.getInstance();
@@ -223,12 +245,12 @@ public class AssignmentDetailActivity extends AppCompatActivity
 //                .setContent("ASSIGNMENT REMINDER")
 //                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
         // Reminders need a Date AND Time selector
-        Button setBtn = findViewById(R.id.button_set_reminder);
+
         TextView reminderDate = findViewById(R.id.text_reminder_date);
         Button cancelBtn = findViewById(R.id.button_cancel_reminder);
 
         // Create Date and Time Pickers when user set reminder
-        setBtn.setOnClickListener(v -> {
+        setReminderButton.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(mAssignment.reminder);
             DatePickerDialog reminderDatePicker = new DatePickerDialog(this, this,
@@ -238,7 +260,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
         });
 
         // Put current reminder datetime in TextView
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm", Locale.US);
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy hh:mm", Locale.US);
         reminderDate.setText(formatter.format(mAssignment.reminder));
 
         // Cancel btn will stop upcoming alarm and reset reminder date
@@ -253,7 +275,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
 
     public void setupCreateDate() {
         // Create date should never change
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
         TextView createDate = findViewById(R.id.text_create_date);
         createDate.setText(formatter.format(mAssignment.createDate));
     }

@@ -9,32 +9,21 @@ import com.mobileapp.classmate.db.entity.Assignment;
 import com.mobileapp.classmate.db.dao.AssignmentDao;
 import com.mobileapp.classmate.db.entity.Course;
 import com.mobileapp.classmate.db.dao.CourseDao;
-import com.mobileapp.classmate.ui.AsyncResult;
 
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Date;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
-public class ClassmateRepository implements AsyncResult {
+public class ClassmateRepository {
     private CourseDao mCourseDao;
     private AssignmentDao mAssignmentDao;
 
     private LiveData<List<Course>> mAllClasses;
     private LiveData<List<Assignment>> mAllAssignments;
     private LiveData<List<Assignment>> mTomorrowAssignments;
-    private MutableLiveData<Assignment> mAssignment = new MutableLiveData<>();
-    @Override
-    public void asyncFinished(Assignment assignment) {
-        mAssignment.setValue(assignment);
-    }
 
-    public MutableLiveData<Assignment> getmAssignment() {
-        if (mAssignment == null) {
-            mAssignment = new MutableLiveData<Assignment>();
-        }
-        return mAssignment;
-    }
 
     public ClassmateRepository(Application application) {
         ClassmateRoomDatabase db = ClassmateRoomDatabase.getDatabase(application);
@@ -64,6 +53,10 @@ public class ClassmateRepository implements AsyncResult {
     public LiveData<Assignment> getAssignment(String courseName, String name) {
         return mAssignmentDao.getAssignment(courseName, name);
     }
+
+//    public int getCourseColor(String courseName) {
+//         return new getCourseColorAsyncTask(mCourseDao).execute().get();
+//    }
 
     public LiveData<List<Assignment>> getTomorrowAssignments() {
         return mTomorrowAssignments;
@@ -186,24 +179,34 @@ public class ClassmateRepository implements AsyncResult {
         }
     }
 
-    // Get Assignment on a seperate thread
-    private static class getAssignmentAsyncTask extends AsyncTask<String, Void, Assignment> {
-        private AssignmentDao asyncAssignmentDao;
-        private ClassmateRepository delegate = null;
+    private static class getCourseColorAsyncTask extends AsyncTask<String, Void, Integer> {
+        private CourseDao asyncCourseDao;
 
-        getAssignmentAsyncTask(AssignmentDao dao) {
-            asyncAssignmentDao = dao;
+        getCourseColorAsyncTask(CourseDao dao) {
+            asyncCourseDao = dao;
         }
-
         @Override
-        protected void onPostExecute(Assignment result) {
-            delegate.asyncFinished(result);
+        protected Integer doInBackground(final String... params) {
+            return asyncCourseDao.getCourseColor(params[0]);
         }
-
-        @Override
-        protected Assignment doInBackground(final String... params) {
-            return asyncAssignmentDao.getMutableAssignment(params[0], params[1]);
-        }
-
     }
+
+    // Get Assignment on a seperate thread
+//    private static class getAssignmentAsyncTask extends AsyncTask<String, Void, Assignment> {
+//        private AssignmentDao asyncAssignmentDao;
+//
+//        getAssignmentAsyncTask(AssignmentDao dao) {
+//            asyncAssignmentDao = dao;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Assignment assignment) {
+//
+//        }
+//
+//        @Override
+//        protected Assignment doInBackground(final String... params) {
+//            return asyncAssignmentDao.getAssignment(params[0], params[1]);
+//        }
+//    }
 }

@@ -43,4 +43,7 @@ public interface CourseDao {
 
     @Query("SELECT * FROM Classes WHERE color =:color")
     List<Course> getCourseViaColor(int color);
+
+    @Query("SELECT color FROM Classes WHERE courseName LIKE '%' || :course || '%'")
+    int getCourseColor(String course);
 }
