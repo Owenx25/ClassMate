@@ -6,98 +6,140 @@
     android:layout_height="fill_parent"
     android:orientation="vertical">
         <!--Needs EditText-->
-        <LinearLayout
-            android:id="@+id/assignment_description"
+    <!--Needs DatePicker Dialog-->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
             <TextView
+                android:id="@+id/title_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/title_description"
-                android:textStyle="bold"/>
+                android:layout_margin="16dp"
+                style="@style/DetailsTitle"/>
+
             <EditText
                 android:id="@+id/etext_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"/>
-        </LinearLayout>
-        <!--Needs DatePicker Dialog-->
-        <LinearLayout
-            android:id="@+id/assignment_due_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_below="@id/assignment_description">
+                android:inputType="text"
+                android:layout_margin="16dp"
+                android:layout_below="@id/title_description"/>
+
+            <TextView
+                android:id="@+id/title_due_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/title_due_date"
+                android:textStyle="bold"
+                android:layout_below="@id/etext_desc"
+                android:layout_margin="16dp"
+                style="@style/DetailsTitle"/>
+
             <TextView
                 android:id="@+id/text_due_date"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-        <!--Needs Number Spinner Dialog-->
-        <LinearLayout
-            android:id="@+id/assignment_priority"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_below="@id/assignment_due_date">
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:layout_below="@id/title_due_date"/>
+
+            <TextView
+                android:id="@+id/title_priority"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/title_priority"
+                android:textStyle="bold"
+                android:layout_margin="16dp"
+                android:layout_below="@id/text_due_date"
+                style="@style/DetailsTitle"/>
+
             <Spinner
                 android:id="@+id/spinner_priority"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-        <!--Needs Date and Time Picker? Dialog-->
-        <RelativeLayout
-            android:id="@+id/assignment_reminder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_below="@id/assignment_priority">
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:layout_below="@id/title_priority"/>
+
+            <TextView
+                android:id="@+id/title_reminder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/title_reminder"
+                android:textStyle="bold"
+                android:layout_margin="16dp"
+                android:layout_below="@id/spinner_priority"
+                style="@style/DetailsTitle"/>
             <Button
                 android:id="@+id/button_set_reminder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:text="@string/set"/>
+                android:layout_margin="16dp"
+                android:layout_below="@id/title_reminder"
+                android:text="@string/set" />
             <TextView
                 android:id="@+id/text_reminder_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/button_set_reminder"/>
+                android:layout_toEndOf="@id/button_set_reminder"
+                android:layout_margin="16dp"
+                android:layout_below="@id/button_set_reminder"/>
+            <!-- This needs to be changed if user sets a reminder date -->
             <Button
                 android:id="@+id/button_cancel_reminder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/text_reminder_date"
+                android:layout_below="@id/button_set_reminder"
                 android:layout_alignParentEnd="true"/>
-        </RelativeLayout>
-        <LinearLayout
-            android:id="@+id/assignment_create_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_below="@id/assignment_reminder">
+
+            <TextView
+                android:id="@+id/title_create_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/title_create_date"
+                android:textStyle="bold"
+                android:layout_below="@id/button_cancel_reminder"
+                android:layout_margin="16dp"
+                style="@style/DetailsTitle"/>
+
             <TextView
                 android:id="@+id/text_create_date"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-        <!--Needs EditText-->
-        <LinearLayout
-            android:id="@+id/assignment_grade"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_below="@id/assignment_create_date"
-            android:visibility="gone">
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:layout_below="@id/title_create_date"/>
+
+            <TextView
+                android:id="@+id/title_grade"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/title_grade"
+                android:textStyle="bold"
+                android:layout_margin="16dp"
+                android:layout_below="@id/text_create_date"
+                style="@style/DetailsTitle"/>
+
             <EditText
                 android:id="@+id/text_grade"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"/>
-        </LinearLayout>
+                android:inputType="number"
+                android:layout_margin="16dp"
+                android:layout_below="@id/title_grade"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="75dp"
+                android:layout_below="@id/text_grade"/>
+        </RelativeLayout>
+    </ScrollView>
 
     <RelativeLayout
+        android:id="@+id/details_bottom"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <Button

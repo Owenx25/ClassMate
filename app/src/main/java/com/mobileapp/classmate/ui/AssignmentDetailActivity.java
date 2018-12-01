@@ -10,9 +10,11 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.arch.persistence.room.PrimaryKey;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -29,6 +31,8 @@ import android.widget.TimePicker;
 import com.mobileapp.classmate.R;
 import com.mobileapp.classmate.db.entity.Assignment;
 import com.mobileapp.classmate.viewmodel.MainViewModel;
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -66,7 +70,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         final String courseName = (String)bundle.get("courseName");
-        final String courseColor = (String)bundle.get("courseColor");
+        final int courseColor = (int)bundle.get("courseColor");
         final String assignmentName = (String)bundle.get("assignmentName");
 
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
@@ -136,6 +140,23 @@ public class AssignmentDetailActivity extends AppCompatActivity
         setupReminder();
         setupCreateDate();
         setupGrade();
+        // set title colors
+        TextView title = findViewById(R.id.title_create_date);
+        title.setTextColor(courseColor);
+        title = findViewById(R.id.title_description);
+        title.setTextColor(courseColor);
+        title = findViewById(R.id.title_due_date);
+        title.setTextColor(courseColor);
+        title = findViewById(R.id.title_grade);
+        title.setTextColor(courseColor);
+        title = findViewById(R.id.title_priority);
+        title.setTextColor(courseColor);
+        title = findViewById(R.id.title_reminder);
+        title.setTextColor(courseColor);
+        // set action bar
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(mAssignment.name);
+        actionBar.setBackgroundDrawable(new ColorDrawable(courseColor));
     }
 
     private void setupDescription() {
