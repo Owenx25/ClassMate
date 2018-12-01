@@ -20,14 +20,20 @@
                 android:text="@string/title_description"
                 android:layout_margin="16dp"
                 style="@style/DetailsTitle"/>
+            <View
+                android:id="@+id/underline_description"
+                style="@style/TitleUnderline"
+                android:layout_below="@id/title_description" />
 
             <EditText
                 android:id="@+id/etext_desc"
+                android:padding="10sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/darker_gray"
+                android:background="@drawable/textview_border"
                 android:inputType="textMultiLine"
                 android:layout_margin="16dp"
+                android:layout_marginTop="10dp"
                 android:layout_below="@id/title_description"/>
 
             <TextView
@@ -40,11 +46,19 @@
                 android:layout_margin="16dp"
                 style="@style/DetailsTitle"/>
 
+            <View
+                android:id="@+id/underline_due_date"
+                style="@style/TitleUnderline"
+                android:layout_below="@id/title_due_date" />
+
             <TextView
                 android:id="@+id/text_due_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
                 android:layout_margin="16dp"
+                android:layout_marginTop="10dp"
                 android:layout_below="@id/title_due_date"/>
 
             <TextView
@@ -57,11 +71,17 @@
                 android:layout_below="@id/text_due_date"
                 style="@style/DetailsTitle"/>
 
+            <View
+                android:id="@+id/underline_priority"
+                style="@style/TitleUnderline"
+                android:layout_below="@id/title_priority" />
+
             <Spinner
                 android:id="@+id/spinner_priority"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
+                android:layout_marginTop="10dp"
                 android:layout_below="@id/title_priority"/>
 
             <TextView
@@ -73,30 +93,39 @@
                 android:layout_margin="16dp"
                 android:layout_below="@id/spinner_priority"
                 style="@style/DetailsTitle"/>
+
+            <View
+                android:id="@+id/underline_reminder"
+                style="@style/TitleUnderline"
+                android:layout_below="@id/title_reminder" />
+
             <Button
                 android:id="@+id/button_set_reminder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
                 android:layout_alignParentStart="true"
                 android:layout_margin="16dp"
                 android:layout_below="@id/title_reminder"
                 android:text="@string/set" />
+
             <TextView
                 android:id="@+id/text_reminder_date"
                 android:textSize="18sp"
                 android:textColor="@android:color/black"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
                 android:layout_toEndOf="@id/button_set_reminder"
                 android:layout_margin="16dp"
-                android:layout_below="@id/button_set_reminder"/>
+                android:gravity="center"
+                android:layout_below="@id/title_reminder"/>
             <!-- This needs to be changed if user sets a reminder date -->
             <Button
                 android:id="@+id/button_cancel_reminder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_margin="16dp"
                 android:layout_toEndOf="@id/text_reminder_date"
-                android:layout_below="@id/button_set_reminder"
+                android:layout_below="@id/title_reminder"
                 android:layout_alignParentEnd="true"/>
 
             <TextView
@@ -109,6 +138,11 @@
                 android:layout_margin="16dp"
                 style="@style/DetailsTitle"/>
 
+            <View
+                android:id="@+id/underline_create_date"
+                style="@style/TitleUnderline"
+                android:layout_below="@id/title_create_date" />
+
             <TextView
                 android:id="@+id/text_create_date"
                 android:layout_width="match_parent"
@@ -116,6 +150,7 @@
                 android:textSize="18sp"
                 android:textColor="@android:color/black"
                 android:layout_margin="16dp"
+                android:layout_marginTop="10dp"
                 android:layout_below="@id/title_create_date"/>
 
             <TextView
@@ -126,7 +161,14 @@
                 android:textStyle="bold"
                 android:layout_margin="16dp"
                 android:layout_below="@id/text_create_date"
+                android:visibility="gone"
                 style="@style/DetailsTitle"/>
+
+            <View
+                android:id="@+id/underline_grade"
+                style="@style/TitleUnderline"
+                android:layout_below="@id/title_grade"
+                android:visibility="gone"/>
 
             <EditText
                 android:id="@+id/text_grade"
@@ -134,6 +176,8 @@
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:layout_margin="16dp"
+                android:layout_marginTop="10dp"
+                android:visibility="gone"
                 android:layout_below="@id/title_grade"/>
 
             <View

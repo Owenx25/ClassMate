@@ -56,6 +56,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
     private EditText mDesc;
     private EditText mGrade;
     private Button setReminderButton;
+    private Spinner mSpinner;
 
     private MainViewModel viewModel;
     private Assignment mAssignment;
@@ -92,19 +93,9 @@ public class AssignmentDetailActivity extends AppCompatActivity
                 setupReminder();
                 setupCreateDate();
                 setupGrade();
-                // set title colors
-                TextView title = findViewById(R.id.title_create_date);
-                title.setTextColor(courseColor);
-                title = findViewById(R.id.title_description);
-                title.setTextColor(courseColor);
-                title = findViewById(R.id.title_due_date);
-                title.setTextColor(courseColor);
-                title = findViewById(R.id.title_grade);
-                title.setTextColor(courseColor);
-                title = findViewById(R.id.title_priority);
-                title.setTextColor(courseColor);
-                title = findViewById(R.id.title_reminder);
-                title.setTextColor(courseColor);
+
+                setupTitles(courseColor);
+
                 // set action bar
                 ActionBar actionBar = getSupportActionBar();
                 actionBar.setTitle(mAssignment.name);
@@ -140,6 +131,8 @@ public class AssignmentDetailActivity extends AppCompatActivity
         mDesc.setFocusable(false);
         mGrade = findViewById(R.id.text_grade);
         mGrade.setFocusable(false);
+        mSpinner = (Spinner) findViewById(R.id.spinner_priority);
+        mSpinner.setEnabled(false);
         setReminderButton = findViewById(R.id.button_set_reminder);
         setReminderButton.setEnabled(false);
         // Add Class Floating action button
@@ -154,6 +147,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
                 mDesc.setFocusableInTouchMode(true);
                 mGrade.setFocusableInTouchMode(true);
                 setReminderButton.setEnabled(true);
+                mSpinner.setEnabled(true);
                 isEditing = true;
             }
             else {
@@ -165,6 +159,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
                 mGrade.clearFocus();
                 mGrade.setFocusable(false);
                 setReminderButton.setEnabled(false);
+                mSpinner.setEnabled(false);
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(mFab.getWindowToken(), 0);
                 /* !!! NEED TO SEND NEW DATA TO DB HERE !!! */
@@ -177,8 +172,37 @@ public class AssignmentDetailActivity extends AppCompatActivity
 
     }
 
-    private void setupListeners() {
+    private void setupTitles(int courseColor) {
+        // set title colors
+        TextView title = findViewById(R.id.title_create_date);
+        title.setTextColor(courseColor);
+        View underline = findViewById(R.id.underline_create_date);
+        underline.setBackgroundColor(courseColor);
 
+        title = findViewById(R.id.title_description);
+        title.setTextColor(courseColor);
+        underline = findViewById(R.id.underline_description);
+        underline.setBackgroundColor(courseColor);
+
+        title = findViewById(R.id.title_due_date);
+        title.setTextColor(courseColor);
+        underline = findViewById(R.id.underline_due_date);
+        underline.setBackgroundColor(courseColor);
+
+        title = findViewById(R.id.title_grade);
+        title.setTextColor(courseColor);
+        underline = findViewById(R.id.underline_grade);
+        underline.setBackgroundColor(courseColor);
+
+        title = findViewById(R.id.title_priority);
+        title.setTextColor(courseColor);
+        underline = findViewById(R.id.underline_priority);
+        underline.setBackgroundColor(courseColor);
+
+        title = findViewById(R.id.title_reminder);
+        title.setTextColor(courseColor);
+        underline = findViewById(R.id.underline_reminder);
+        underline.setBackgroundColor(courseColor);
     }
 
     private void setupDescription() {
@@ -205,7 +229,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
     private void setupDueDate() {
         // Set Due Date from database
         final TextView DueDateText = findViewById(R.id.text_due_date);
-        SimpleDateFormat formatter = new SimpleDateFormat("mm/dd/yyyy", Locale.US);
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
         String formattedDate = formatter.format(mAssignment.dueDate);
         DueDateText.setText(formattedDate);
         Calendar calendar = Calendar.getInstance();
@@ -224,16 +248,15 @@ public class AssignmentDetailActivity extends AppCompatActivity
     }
 
     private void setupPriority() {
-        // Set Priority from Database
-        Spinner spinner = (Spinner) findViewById(R.id.spinner_priority);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.priority_array, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinner.setSelection(mAssignment.priority);
         // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
+        mSpinner.setAdapter(adapter);
+        mSpinner.setOnItemSelectedListener(this);
     }
 
     public void setupReminder() {
@@ -257,6 +280,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
                     calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
             editDate = EditDate.REMINDER_DATE;
             reminderDatePicker.show();
+
         });
 
         // Put current reminder datetime in TextView
@@ -301,7 +325,8 @@ public class AssignmentDetailActivity extends AppCompatActivity
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         // There are only 5 priority options
-        mAssignment.priority = 5 - pos;
+        mAssignment.priority = pos;
+        parent.setSelection(pos);
     }
 
     @Override
@@ -314,7 +339,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
         calendar.set(Calendar.MONTH, month);
         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         newDate = calendar.getTime();
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/mm/yyyy", Locale.US);
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
         switch (editDate) {
             case DUE_DATE:
                 final TextView DueDateText = findViewById(R.id.text_due_date);
@@ -341,28 +366,33 @@ public class AssignmentDetailActivity extends AppCompatActivity
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         // Set new reminder time
         // if Time pick cancels reminder will stay unchanged
+        TextView reminderDate = findViewById(R.id.text_reminder_date);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(newDate);
         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         calendar.set(Calendar.MINUTE, minute);
         mAssignment.reminder = calendar.getTime();
 
+        // Put current reminder datetime in TextView
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy hh:mm", Locale.US);
+        reminderDate.setText(formatter.format(mAssignment.reminder));
+
         /**** NEED TO START ALARM SERVICE HERE ****/
     }
 
-    private void CreateNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "reminder_channel";
-            String description = "Channel for all assignment reminders";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
+//    private void CreateNotificationChannel() {
+//        // Create the NotificationChannel, but only on API 26+ because
+//        // the NotificationChannel class is new and not in the support library
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            CharSequence name = "reminder_channel";
+//            String description = "Channel for all assignment reminders";
+//            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+//            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+//            channel.setDescription(description);
+//            // Register the channel with the system; you can't change the importance
+//            // or other notification behaviors after this
+//            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+//            notificationManager.createNotificationChannel(channel);
+//        }
+//    }
 }

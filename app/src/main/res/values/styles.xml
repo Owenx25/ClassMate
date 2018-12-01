@@ -13,6 +13,14 @@
         <item name="titleTextColor">@color/colorWhite</item>
     </style>
 
+    <style name="TitleUnderline">
+        <item name="android:layout_marginTop">-18dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">4dp</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+    </style>
+
     <style name="DetailsTitle">
         <item name="android:textSize">25sp</item>
         <item name="android:textStyle">bold</item>
