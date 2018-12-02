@@ -159,12 +159,14 @@
 
             <TextView
                 android:id="@+id/text_create_date"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 android:textColor="@android:color/black"
-                android:layout_margin="16dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="16dp"
                 android:layout_below="@id/title_create_date"/>
 
             <TextView
@@ -190,13 +192,12 @@
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:layout_margin="16dp"
-                android:layout_marginTop="10dp"
                 android:visibility="gone"
                 android:layout_below="@id/title_grade"/>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="75dp"
+                android:layout_height="85dp"
                 android:layout_below="@id/text_grade"/>
         </RelativeLayout>
     </ScrollView>

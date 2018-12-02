@@ -13,13 +13,14 @@ import java.util.Date;
 @Entity(tableName = "Assignments")
 public class Assignment {
     public Assignment(@NonNull String name, @NonNull String className, int priority,
-                      Date dueDate,Date createDate, boolean isComplete, Date reminder,
+                      Date dueDate,Date createDate, Date completeDate, boolean isComplete, Date reminder,
                       @NonNull String description, int grade){
         this.name = name;
         this.className = className;
         this.priority = priority;
         this.dueDate = dueDate;
         this.createDate = createDate;
+        this.completeDate = completeDate;
         this.isComplete = isComplete;
         this.reminder = reminder;
         this.description = description;
@@ -34,6 +35,7 @@ public class Assignment {
     public int priority;
     public Date dueDate;
     public Date createDate;
+    public Date completeDate;
     public Boolean isComplete;
     public Date reminder;
     public String description;

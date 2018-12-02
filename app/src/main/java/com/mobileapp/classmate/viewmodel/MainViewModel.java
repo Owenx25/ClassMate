@@ -41,13 +41,6 @@ public class MainViewModel extends AndroidViewModel {
 
     public LiveData<Course> getCourse(String name) { return repository.getCourse(name); }
 
-    public LiveData<Assignment> getCurrentAssignment(String courseName, String name) {
-        if (currentAssignment == null) {
-            currentAssignment = new MutableLiveData<>();
-        }
-        return currentAssignment;
-    }
-
     public LiveData<Assignment> getAssignment(String courseName, String name) {
         return repository.getAssignment(courseName, name);
     }
@@ -55,10 +48,6 @@ public class MainViewModel extends AndroidViewModel {
     public LiveData<List<Assignment>> getCourseAssignments(String course) {
         return repository.getCourseAssignments(course);
     }
-
-//    public int getCourseColor(String courseName) {
-//        return repository.getCourseColor(courseName);
-//    }
 
     public void updateAssignment(Assignment assignment) {
         repository.updateAssignment(assignment);

@@ -1,18 +1,24 @@
 package com.mobileapp.classmate.ui;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -50,6 +56,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
     private EditText mGrade;
     private Button setReminderButton;
     private Spinner mSpinner;
+    private Drawable spinnerDrawable;
     private ImageButton cancelBtn;
 
     private MainViewModel viewModel;
@@ -57,8 +64,6 @@ public class AssignmentDetailActivity extends AppCompatActivity
 
     private Date newDate;
     EditDate editDate;
-
-
 
     @Override
     protected void onCreate(Bundle savedStateInstance) {
@@ -87,22 +92,9 @@ public class AssignmentDetailActivity extends AppCompatActivity
                 setupReminder();
                 setupCreateDate();
                 setupGrade();
+                setupCompleteButton();
 
                 setupTitles(courseColor);
-
-                TextView days_left = findViewById(R.id.days_left);
-                Date today = new Date();
-                long diffInMillies = mAssignment.dueDate.getTime() - today.getTime();
-                long diff = TimeUnit.DAYS.convert(Math.abs(diffInMillies), TimeUnit.MILLISECONDS);
-                if (diff == 1) {
-                    days_left.setText(R.string.days_left_one);
-                } else if (diff == 0) {
-                    days_left.setText(R.string.days_left_zero);
-                } else if (diffInMillies < 0) {
-                    days_left.setText(getString(R.string.days_left_lt_zero, diff));
-                } else {// diff > 1
-                    days_left.setText(getString(R.string.days_left_gt_one, diff));
-                }
 
                 // set action bar
                 ActionBar actionBar = getSupportActionBar();
@@ -115,19 +107,21 @@ public class AssignmentDetailActivity extends AppCompatActivity
 
         // Should only create when coming from add dialog
         if (isNewAssignment) {
-            Date createDate = new Date();
             Calendar c = Calendar.getInstance();
-            c.setTime(createDate);
+            c.setTime(resetTime(new Date()));
+            Date createDate = c.getTime();
             c.add(Calendar.DATE, 1);
             Date dueDate = c.getTime();
+
             mAssignment = new Assignment(
                     assignmentName,
                     courseName,
                     3,
                     dueDate,
                     createDate,
+                    null,
                     false,
-                    new Date(),
+                    null,
                     "",
                     0);
             viewModel.insertAssignment(mAssignment);
@@ -339,6 +333,42 @@ public class AssignmentDetailActivity extends AppCompatActivity
         // Editing is enabled in the FAB listener
     }
 
+    public void setupCompleteButton() {
+        LayoutInflater layoutInflater = getLayoutInflater();
+        View addGradeView = layoutInflater.inflate(R.layout.dialog_add_grade, null);
+        final AlertDialog alertD = new AlertDialog.Builder(this)
+                .setTitle("Add Grade")
+                .create();
+        EditText gradeInput = addGradeView.findViewById(R.id.grade_points);
+        EditText maxGradeInput = addGradeView.findViewById(R.id.max_grade_points);
+        Button saveBtn = addGradeView.findViewById(R.id.button_add_grade_save);
+        Button cancelBtn = addGradeView.findViewById(R.id.button_add_grade_cancel);
+        Button completeBtn = findViewById(R.id.button_mark_complete);
+
+        alertD.setView(addGradeView);
+        completeBtn.setOnClickListener(v -> alertD.show());
+
+        saveBtn.setOnClickListener(v -> {
+            // Make grade component visible
+            findViewById(R.id.text_grade).setVisibility(View.VISIBLE);
+
+            // update complete button to red with date
+            completeBtn.setClickable(false);
+            completeBtn.setBackgroundColor(Color.RED);
+            SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
+            Date completeDate = new Date();
+            mAssignment.isComplete = true;
+            mAssignment.completeDate = completeDate;
+            String formattedDate = formatter.format(completeDate);
+            completeBtn.setText(getString(R.string.button_complete, formattedDate));
+            completeBtn.setTypeface(completeBtn.getTypeface(), Typeface.BOLD);
+            alertD.dismiss();
+        });
+
+        // Quit on cancel press
+        cancelBtn.setOnClickListener(v -> alertD.dismiss());
+    }
+
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         // There are only 5 priority options
@@ -355,7 +385,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month);
         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        newDate = calendar.getTime();
+        newDate = resetTime(calendar.getTime());
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
         switch (editDate) {
             case DUE_DATE:
@@ -363,6 +393,20 @@ public class AssignmentDetailActivity extends AppCompatActivity
                 String formattedDate = formatter.format(newDate);
                 DueDateText.setText(formattedDate);
                 mAssignment.dueDate = newDate;
+
+                TextView days_left = findViewById(R.id.days_left);
+                Date today = resetTime(new Date());
+                long diffInMillies = mAssignment.dueDate.getTime() - today.getTime();
+                long diff = TimeUnit.DAYS.convert(Math.abs(diffInMillies), TimeUnit.MILLISECONDS);
+                if (diff == 1 && diffInMillies > 0) {
+                    days_left.setText(R.string.days_left_one);
+                } else if (diff == 0) {
+                    days_left.setText(R.string.days_left_zero);
+                } else if (diffInMillies < 0) {
+                    days_left.setText(getString(R.string.days_left_lt_zero, diff));
+                } else {// diff > 1
+                    days_left.setText(getString(R.string.days_left_gt_one, diff));
+                }
                 break;
             case REMINDER_DATE:
                 // Save date pick then move on to time
@@ -397,19 +441,14 @@ public class AssignmentDetailActivity extends AppCompatActivity
         /**** NEED TO START ALARM SERVICE HERE ****/
     }
 
-//    private void CreateNotificationChannel() {
-//        // Create the NotificationChannel, but only on API 26+ because
-//        // the NotificationChannel class is new and not in the support library
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            CharSequence name = "reminder_channel";
-//            String description = "Channel for all assignment reminders";
-//            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-//            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-//            channel.setDescription(description);
-//            // Register the channel with the system; you can't change the importance
-//            // or other notification behaviors after this
-//            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-//            notificationManager.createNotificationChannel(channel);
-//        }
-//    }
+    private static Date resetTime(Date date) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        return c.getTime();
+    }
+
 }

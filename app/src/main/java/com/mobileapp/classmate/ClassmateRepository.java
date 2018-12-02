@@ -54,17 +54,11 @@ public class ClassmateRepository {
         return mAssignmentDao.getAssignment(courseName, name);
     }
 
-//    public int getCourseColor(String courseName) {
-//         return new getCourseColorAsyncTask(mCourseDao).execute().get();
-//    }
 
     public LiveData<List<Assignment>> getTomorrowAssignments() {
         return mTomorrowAssignments;
     }
 
-    public Assignment getMutableAssignment(String courseName, String name) {
-        return mAssignmentDao.getMutableAssignment(courseName, name);
-    }
 
     public void insertAssignment(Assignment assignment) {
         new insertAssignmentAsyncTask(mAssignmentDao).execute(assignment);
@@ -178,35 +172,4 @@ public class ClassmateRepository {
             return null;
         }
     }
-
-    private static class getCourseColorAsyncTask extends AsyncTask<String, Void, Integer> {
-        private CourseDao asyncCourseDao;
-
-        getCourseColorAsyncTask(CourseDao dao) {
-            asyncCourseDao = dao;
-        }
-        @Override
-        protected Integer doInBackground(final String... params) {
-            return asyncCourseDao.getCourseColor(params[0]);
-        }
-    }
-
-    // Get Assignment on a seperate thread
-//    private static class getAssignmentAsyncTask extends AsyncTask<String, Void, Assignment> {
-//        private AssignmentDao asyncAssignmentDao;
-//
-//        getAssignmentAsyncTask(AssignmentDao dao) {
-//            asyncAssignmentDao = dao;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Assignment assignment) {
-//
-//        }
-//
-//        @Override
-//        protected Assignment doInBackground(final String... params) {
-//            return asyncAssignmentDao.getAssignment(params[0], params[1]);
-//        }
-//    }
 }
