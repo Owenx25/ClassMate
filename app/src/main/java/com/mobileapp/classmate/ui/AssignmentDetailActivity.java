@@ -92,9 +92,17 @@ public class AssignmentDetailActivity extends AppCompatActivity
 
                 TextView days_left = findViewById(R.id.days_left);
                 Date today = new Date();
-                long diffInMillies = Math.abs(mAssignment.dueDate.getTime() - today.getTime());
-                long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-                days_left.setText(String.format(Locale.US, "%s", getString(R.string.days_left, diff)));
+                long diffInMillies = mAssignment.dueDate.getTime() - today.getTime();
+                long diff = TimeUnit.DAYS.convert(Math.abs(diffInMillies), TimeUnit.MILLISECONDS);
+                if (diff == 1) {
+                    days_left.setText(R.string.days_left_one);
+                } else if (diff == 0) {
+                    days_left.setText(R.string.days_left_zero);
+                } else if (diffInMillies < 0) {
+                    days_left.setText(getString(R.string.days_left_lt_zero, diff));
+                } else {// diff > 1
+                    days_left.setText(getString(R.string.days_left_gt_one, diff));
+                }
 
                 // set action bar
                 ActionBar actionBar = getSupportActionBar();

@@ -23,7 +23,7 @@
         <item>BOTTOM</item>
     </string-array>
     <string name="dialog_title_delete_course">Delete Course?</string>
-    <string name="button_delete">Delete</string>
+    <string name="button_delete" translatable="false">Delete</string>
     <string name="title_description">DESCRIPTION</string>
     <string name="title_due_date">DUE DATE</string>
     <string name="title_create_date">CREATE DATE</string>
@@ -32,5 +32,8 @@
     <string name="dialog_title_delete_assignment">Delete Assignment?</string>
     <string name="title_grade">GRADE</string>
     <string name="reminder_null">No Reminder Set!</string>
-    <string name="days_left">Due in %1$s days!</string>
+    <string name="days_left_gt_one">Due in %1$d days!</string>
+    <string name="days_left_lt_zero">Due %1$d days ago!</string>
+    <string name="days_left_one">Due tommorow!</string>
+    <string name="days_left_zero">Due today!</string>
 </resources>
