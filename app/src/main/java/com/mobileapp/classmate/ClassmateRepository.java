@@ -72,6 +72,14 @@ public class ClassmateRepository {
         new updateAssignmentAsyncTask(mAssignmentDao).execute(assignment);
     }
 
+    public void updateCourse(Course course) {
+        new updateCourseAsyncTask(mCourseDao).execute(course);
+    }
+
+    public void updateCourseName(String oldName, String newName) {
+        new updateCourseNameAsyncTask(mAssignmentDao).execute(oldName, newName);
+    }
+
     public void deleteCourse(String name) {
         new deleteCourseAsyncTask(mCourseDao).execute(name);
         new deleteCourseAssignmentsAsyncTask(mAssignmentDao).execute(name);
@@ -158,7 +166,6 @@ public class ClassmateRepository {
         }
     }
 
-    // Delete a course on a separate thread
     private static class updateAssignmentAsyncTask extends AsyncTask<Assignment, Void, Void> {
         private AssignmentDao asyncAssignmentDao;
 
@@ -169,6 +176,34 @@ public class ClassmateRepository {
         @Override
         protected Void doInBackground(final Assignment... params) {
             asyncAssignmentDao.updateAssignment(params[0]);
+            return null;
+        }
+    }
+
+    private static class updateCourseAsyncTask extends AsyncTask<Course, Void, Void> {
+        private CourseDao asyncCourseDao;
+
+        updateCourseAsyncTask(CourseDao dao) {
+            asyncCourseDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final Course... params) {
+            asyncCourseDao.updateCourse(params[0]);
+            return null;
+        }
+    }
+
+    private static class updateCourseNameAsyncTask extends AsyncTask<String, Void, Void> {
+        private AssignmentDao asyncAssignmentDao;
+
+        updateCourseNameAsyncTask(AssignmentDao dao) {
+            asyncAssignmentDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final String... params) {
+            asyncAssignmentDao.updateCourseName(params[0], params[1]);
             return null;
         }
     }

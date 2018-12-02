@@ -30,6 +30,9 @@ public interface AssignmentDao {
     @Update
     void updateAssignment(Assignment assignment);
 
+    @Query("UPDATE Assignments SET className = :newName WHERE className LIKE '%' || :oldName || '%'")
+    void updateCourseName(String oldName, String newName);
+
     @Query("DELETE FROM Assignments WHERE className = :courseName AND name = :assignName")
     void delete(String courseName, String assignName);
 

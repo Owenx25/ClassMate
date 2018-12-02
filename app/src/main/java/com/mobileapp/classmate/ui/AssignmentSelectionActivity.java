@@ -5,7 +5,9 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
@@ -25,6 +27,8 @@ import android.widget.Toast;
 import com.mobileapp.classmate.R;
 import com.mobileapp.classmate.db.entity.Course;
 import com.mobileapp.classmate.viewmodel.MainViewModel;
+
+import java.util.Date;
 
 public class AssignmentSelectionActivity extends AppCompatActivity {
     // Floating action button for adding assignments
@@ -80,10 +84,11 @@ public class AssignmentSelectionActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.rename_course:
                 // Fire a dialog for new name
+                showRenameCourseDialog();
                 return true;
             case R.id.recolor_course:
                 // fire a dialog for new course color
@@ -93,6 +98,38 @@ public class AssignmentSelectionActivity extends AppCompatActivity {
         }
     }
 
+    private void showRenameCourseDialog() {
+        LayoutInflater layoutInflater = getLayoutInflater();
+        View renameCourseView = layoutInflater.inflate(R.layout.dialog_rename_course, null);
+        final AlertDialog alertD = new AlertDialog.Builder(this)
+                .setTitle("Rename Assignment")
+                .create();
+        Button saveBtn = renameCourseView.findViewById(R.id.button_rename_course_save);
+        Button cancelBtn = renameCourseView.findViewById(R.id.button_rename_course_cancel);
+        EditText courseInput = renameCourseView.findViewById(R.id.course_rename);
+
+        alertD.setView(renameCourseView);
+        alertD.show();
+
+        // Validate Course inputs and add to DB
+        saveBtn.setOnClickListener(v -> {
+            if (courseInput.getText().toString().matches("")) {
+                Toast.makeText(this, R.string.invalid_course, Toast.LENGTH_SHORT).show();
+            } else {
+                String oldName = mCourse.courseName;
+                mCourse.courseName = courseInput.getText().toString();
+                viewModel.updateAssignCourseName(oldName, mCourse.courseName);
+                viewModel.updateCourse(mCourse);
+                // Also need to update all assignments in course
+                getSupportActionBar().setTitle(mCourse.courseName);
+                alertD.dismiss();
+
+            }
+        });
+
+        // Quit on cancel press
+        cancelBtn.setOnClickListener(v -> alertD.dismiss());
+    }
 
     private void showAddAssignmentDialog(String courseName) {
     LayoutInflater layoutInflater = getLayoutInflater();

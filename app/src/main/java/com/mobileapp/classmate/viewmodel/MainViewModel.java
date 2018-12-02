@@ -52,6 +52,14 @@ public class MainViewModel extends AndroidViewModel {
         repository.updateAssignment(assignment);
     }
 
+    public void updateCourse(Course course) {
+        repository.updateCourse(course);
+    }
+
+    public void updateAssignCourseName(String oldName, String newName){
+        repository.updateCourseName(oldName, newName);
+    }
+
     public void insertCourse(Course course){
         repository.insertCourse(course);
     }
