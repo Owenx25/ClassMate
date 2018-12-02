@@ -92,6 +92,7 @@ public class AssignmentSelectionActivity extends AppCompatActivity {
                 return true;
             case R.id.recolor_course:
                 // fire a dialog for new course color
+                //showRecolorDialog();
                 return true;
             default:
                 return super.onContextItemSelected(item);

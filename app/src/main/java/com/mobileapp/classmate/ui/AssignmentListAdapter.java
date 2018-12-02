@@ -24,11 +24,14 @@ import com.mobileapp.classmate.db.entity.Assignment;
 import com.mobileapp.classmate.db.entity.Course;
 import com.mobileapp.classmate.viewmodel.MainViewModel;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAdapter.AssignmentViewHolder> {
     class AssignmentViewHolder extends RecyclerView.ViewHolder {
         TextView assignmentItemView;
+        TextView dateItemView;
         private MainViewModel viewModel;
         private Course mCourse;
 
@@ -51,6 +54,7 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
         private AssignmentViewHolder(View itemView) {
             super(itemView);
             assignmentItemView = itemView.findViewById(R.id.assignment_name_textView);
+            dateItemView = itemView.findViewById(R.id.assignment_listItem_Due_Date);
 
             // Open up assignment detail activity
             itemView.setOnClickListener(v -> {
@@ -115,10 +119,15 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
     public void onBindViewHolder(@NonNull AssignmentViewHolder holder, int position) {
         if (mAssignments != null) {
             Assignment current = mAssignments.get(position);
+            SimpleDateFormat formatter = new SimpleDateFormat("MM/dd", Locale.US);
+            String formattedDate = formatter.format(current.dueDate);
+
             if (mFragment == null) {
                 holder.setupObserver(current.className, mActivity);
-            } else
+            } else {
                 holder.setupObserver(current.className, mFragment);
+            }
+            holder.dateItemView.setText(formattedDate);
             holder.assignmentItemView.setText(current.name);
         } else {
             // If there's no data

@@ -1,16 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/back"
+    android:orientation="horizontal"
+    android:layout_margin="@dimen/smallest_padding">
+
+    <TextView
+        android:id="@+id/assignment_listItem_Due_Date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="3"/>
 
     <TextView
         android:id="@+id/assignment_name_textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/smallest_padding"
-        android:background="@drawable/back"
-        android:gravity="center"
         android:textAppearance="@color/colorPrimary"
-        android:textSize="30sp" />
+        android:textSize="25sp"
+        android:layout_weight="1"/>
 
 </LinearLayout>
