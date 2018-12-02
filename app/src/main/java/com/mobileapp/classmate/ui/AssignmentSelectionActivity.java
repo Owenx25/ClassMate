@@ -39,7 +39,7 @@ public class AssignmentSelectionActivity extends AppCompatActivity {
     private MainViewModel viewModel;
     private Course mCourse;
     private final AssignmentListAdapter adapter =
-            new AssignmentListAdapter(R.layout.activity_assignment_selection_layout);
+            new AssignmentListAdapter(R.layout.activity_assignment_selection_layout, this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

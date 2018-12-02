@@ -20,8 +20,6 @@ public class DailyPageFragment extends Fragment {
 
     private TextView courseName;
     private TextView courseColor;
-    private final AssignmentListAdapter adapter =
-            new AssignmentListAdapter(R.layout.daily_layout);
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -35,7 +33,7 @@ public class DailyPageFragment extends Fragment {
                 .findViewById(R.id.assignment_selection_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        final AssignmentListAdapter adapter = new AssignmentListAdapter(R.layout.daily_layout);
+        final AssignmentListAdapter adapter = new AssignmentListAdapter(R.layout.daily_layout, getActivity());
 
         // Setup ViewModel and Adapter
         recyclerView.setAdapter(adapter);
@@ -47,6 +45,5 @@ public class DailyPageFragment extends Fragment {
         return rootView;
 
     }
-
 }
 
