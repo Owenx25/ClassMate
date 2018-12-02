@@ -1,19 +1,12 @@
 package com.mobileapp.classmate.ui;
 
 import android.app.DatePickerDialog;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.TimePickerDialog;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.arch.persistence.room.PrimaryKey;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
-import android.hardware.input.InputManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
@@ -36,12 +29,11 @@ import com.mobileapp.classmate.R;
 import com.mobileapp.classmate.db.entity.Assignment;
 import com.mobileapp.classmate.viewmodel.MainViewModel;
 
-import org.w3c.dom.Text;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class AssignmentDetailActivity extends AppCompatActivity
     implements  DatePickerDialog.OnDateSetListener,
@@ -97,6 +89,12 @@ public class AssignmentDetailActivity extends AppCompatActivity
                 setupGrade();
 
                 setupTitles(courseColor);
+
+                TextView days_left = findViewById(R.id.days_left);
+                Date today = new Date();
+                long diffInMillies = Math.abs(mAssignment.dueDate.getTime() - today.getTime());
+                long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                days_left.setText(String.format(Locale.US, "%s", getString(R.string.days_left, diff)));
 
                 // set action bar
                 ActionBar actionBar = getSupportActionBar();

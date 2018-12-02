@@ -53,13 +53,25 @@
 
             <TextView
                 android:id="@+id/text_due_date"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 android:textColor="@android:color/black"
                 android:layout_margin="16dp"
+                android:layout_alignParentStart="true"
                 android:layout_marginTop="10dp"
                 android:layout_below="@id/title_due_date"/>
+
+            <TextView
+                android:id="@+id/days_left"
+                android:layout_alignParentEnd="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:layout_margin="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/title_due_date"
+                android:textColor="@android:color/holo_red_dark"/>
 
             <TextView
                 android:id="@+id/title_priority"
