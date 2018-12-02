@@ -53,8 +53,9 @@ public class AssignmentDetailActivity extends AppCompatActivity
     private FloatingActionButton mFab;
     boolean isEditing = false;
     private EditText mDesc;
-    private EditText mGrade;
+    private TextView mGrade;
     private Button setReminderButton;
+    private Button completeBtn;
     private Spinner mSpinner;
     private Drawable spinnerDrawable;
     private ImageButton cancelBtn;
@@ -91,7 +92,6 @@ public class AssignmentDetailActivity extends AppCompatActivity
                 setupPriority();
                 setupReminder();
                 setupCreateDate();
-                setupGrade();
                 setupCompleteButton();
 
                 setupTitles(courseColor);
@@ -123,7 +123,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
                     false,
                     null,
                     "",
-                    0);
+                    0, 0);
             viewModel.insertAssignment(mAssignment);
         } else {
             viewModel.getAssignment(courseName, assignmentName);
@@ -138,6 +138,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
         setReminderButton = findViewById(R.id.button_set_reminder);
         setReminderButton.setEnabled(false);
         cancelBtn = findViewById(R.id.button_cancel_reminder);
+        completeBtn = findViewById(R.id.button_mark_complete);
         // Add Class Floating action button
         mFab = (FloatingActionButton) findViewById(R.id.fab_edit_assignment);
         mFab.setOnClickListener(v -> {
@@ -152,6 +153,8 @@ public class AssignmentDetailActivity extends AppCompatActivity
                 setReminderButton.setEnabled(true);
                 mSpinner.setEnabled(true);
                 cancelBtn.setVisibility(View.VISIBLE);
+                // No marking complete while editing
+                completeBtn.setEnabled(false);
                 isEditing = true;
             }
             else {
@@ -164,7 +167,9 @@ public class AssignmentDetailActivity extends AppCompatActivity
                 mGrade.setFocusable(false);
                 setReminderButton.setEnabled(false);
                 mSpinner.setEnabled(false);
+                completeBtn.setEnabled(true);
                 cancelBtn.setVisibility(View.GONE);
+
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(mFab.getWindowToken(), 0);
                 /* !!! NEED TO SEND NEW DATA TO DB HERE !!! */
@@ -315,24 +320,6 @@ public class AssignmentDetailActivity extends AppCompatActivity
         createDate.setText(formatter.format(mAssignment.createDate));
     }
 
-    public void setupGrade() {
-        // Set Text from DB
-        mGrade.setText(String.valueOf(mAssignment.grade));
-        mGrade.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (Integer.parseInt(s.toString()) != mAssignment.grade) {
-                    mAssignment.grade = Integer.parseInt(s.toString());
-                }
-            }
-            @Override
-            public void afterTextChanged(Editable s) { }
-        });
-        // Editing is enabled in the FAB listener
-    }
-
     public void setupCompleteButton() {
         LayoutInflater layoutInflater = getLayoutInflater();
         View addGradeView = layoutInflater.inflate(R.layout.dialog_add_grade, null);
@@ -348,21 +335,31 @@ public class AssignmentDetailActivity extends AppCompatActivity
         alertD.setView(addGradeView);
         completeBtn.setOnClickListener(v -> alertD.show());
 
-        saveBtn.setOnClickListener(v -> {
-            // Make grade component visible
-            findViewById(R.id.text_grade).setVisibility(View.VISIBLE);
-
+        if (mAssignment.isComplete) {
             // update complete button to red with date
             completeBtn.setClickable(false);
             completeBtn.setBackgroundColor(Color.RED);
             SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
-            Date completeDate = new Date();
-            mAssignment.isComplete = true;
-            mAssignment.completeDate = completeDate;
-            String formattedDate = formatter.format(completeDate);
+            String formattedDate = formatter.format(mAssignment.completeDate);
             completeBtn.setText(getString(R.string.button_complete, formattedDate));
             completeBtn.setTypeface(completeBtn.getTypeface(), Typeface.BOLD);
+
+            // Make grade component visible
+            TextView grade = findViewById(R.id.text_grade);
+            grade.setVisibility(View.VISIBLE);
+            grade.setText(getString(R.string.grade_value, mAssignment.grade, mAssignment.maxGrade));
+            findViewById(R.id.title_grade).setVisibility(View.VISIBLE);
+            findViewById(R.id.underline_grade).setVisibility(View.VISIBLE);
+        }
+
+        saveBtn.setOnClickListener(v -> {
+            mAssignment.isComplete = true;
+            mAssignment.completeDate = resetTime(new Date());
+            mAssignment.grade = Integer.parseInt(gradeInput.getText().toString());
+            mAssignment.maxGrade = Integer.parseInt(maxGradeInput.getText().toString());
             alertD.dismiss();
+            // force an update to show new button
+            viewModel.updateAssignment(mAssignment);
         });
 
         // Quit on cancel press

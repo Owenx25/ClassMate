@@ -186,12 +186,14 @@
                 android:layout_below="@id/title_grade"
                 android:visibility="gone"/>
 
-            <EditText
+            <TextView
                 android:id="@+id/text_grade"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
                 android:layout_margin="16dp"
+                android:textSize="24sp"
+                android:textColor="@android:color/holo_green_dark"
+                android:textStyle="bold"
                 android:visibility="gone"
                 android:layout_below="@id/title_grade"/>
 
