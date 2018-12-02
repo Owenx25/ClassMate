@@ -17,7 +17,6 @@ public class MainViewModel extends AndroidViewModel {
     private LiveData<List<Assignment>> allAssignments;
     private LiveData<List<Course>> allCourses;
     private LiveData<List<Assignment>> tomorrowAssignments;
-    private MutableLiveData<Assignment> currentAssignment;
 
     public MainViewModel(Application application) {
         super(application);

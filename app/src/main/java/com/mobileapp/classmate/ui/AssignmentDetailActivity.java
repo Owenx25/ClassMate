@@ -30,6 +30,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.mobileapp.classmate.R;
 import com.mobileapp.classmate.db.entity.Assignment;
@@ -353,13 +354,18 @@ public class AssignmentDetailActivity extends AppCompatActivity
         }
 
         saveBtn.setOnClickListener(v -> {
-            mAssignment.isComplete = true;
-            mAssignment.completeDate = resetTime(new Date());
-            mAssignment.grade = Integer.parseInt(gradeInput.getText().toString());
-            mAssignment.maxGrade = Integer.parseInt(maxGradeInput.getText().toString());
-            alertD.dismiss();
-            // force an update to show new button
-            viewModel.updateAssignment(mAssignment);
+            if (gradeInput.getText().toString().matches("") ||
+                    maxGradeInput.getText().toString().matches("")) {
+                Toast.makeText(this, R.string.invalid_grade, Toast.LENGTH_SHORT).show();
+            } else {
+                mAssignment.isComplete = true;
+                mAssignment.completeDate = resetTime(new Date());
+                mAssignment.grade = Integer.parseInt(gradeInput.getText().toString());
+                mAssignment.maxGrade = Integer.parseInt(maxGradeInput.getText().toString());
+                alertD.dismiss();
+                // force an update to show new button
+                viewModel.updateAssignment(mAssignment);
+            }
         });
 
         // Quit on cancel press

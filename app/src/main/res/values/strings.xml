@@ -40,4 +40,7 @@
     <string name="grade_value">"%1$d out of %2$d "</string>
     <string name="button_complete">Completed on %1$s</string>
     <string name="out_of">out of</string>
+    <string name="rename_class">Rename Class</string>
+    <string name="recolor_course">Change color</string>
+    <string name="invalid_grade">Must enter grade values!</string>
 </resources>
