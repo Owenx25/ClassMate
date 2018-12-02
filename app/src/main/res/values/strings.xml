@@ -31,4 +31,5 @@
     <string name="title_priority">PRIORITY</string>
     <string name="dialog_title_delete_assignment">Delete Assignment?</string>
     <string name="title_grade">GRADE</string>
+    <string name="reminder_null">No Reminder Set!</string>
 </resources>

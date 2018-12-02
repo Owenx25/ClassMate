@@ -27,6 +27,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -57,6 +58,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
     private EditText mGrade;
     private Button setReminderButton;
     private Spinner mSpinner;
+    private ImageButton cancelBtn;
 
     private MainViewModel viewModel;
     private Assignment mAssignment;
@@ -135,6 +137,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
         mSpinner.setEnabled(false);
         setReminderButton = findViewById(R.id.button_set_reminder);
         setReminderButton.setEnabled(false);
+        cancelBtn = findViewById(R.id.button_cancel_reminder);
         // Add Class Floating action button
         mFab = (FloatingActionButton) findViewById(R.id.fab_edit_assignment);
         mFab.setOnClickListener(v -> {
@@ -148,6 +151,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
                 mGrade.setFocusableInTouchMode(true);
                 setReminderButton.setEnabled(true);
                 mSpinner.setEnabled(true);
+                cancelBtn.setVisibility(View.VISIBLE);
                 isEditing = true;
             }
             else {
@@ -160,6 +164,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
                 mGrade.setFocusable(false);
                 setReminderButton.setEnabled(false);
                 mSpinner.setEnabled(false);
+                cancelBtn.setVisibility(View.GONE);
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(mFab.getWindowToken(), 0);
                 /* !!! NEED TO SEND NEW DATA TO DB HERE !!! */
@@ -168,8 +173,6 @@ public class AssignmentDetailActivity extends AppCompatActivity
             }
         });
         mFab.show();
-
-
     }
 
     private void setupTitles(int courseColor) {
@@ -253,10 +256,10 @@ public class AssignmentDetailActivity extends AppCompatActivity
                 R.array.priority_array, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpinner.setSelection(mAssignment.priority);
         // Apply the adapter to the spinner
         mSpinner.setAdapter(adapter);
         mSpinner.setOnItemSelectedListener(this);
+        mSpinner.setSelection(mAssignment.priority);
     }
 
     public void setupReminder() {
@@ -270,12 +273,24 @@ public class AssignmentDetailActivity extends AppCompatActivity
         // Reminders need a Date AND Time selector
 
         TextView reminderDate = findViewById(R.id.text_reminder_date);
-        Button cancelBtn = findViewById(R.id.button_cancel_reminder);
+        ImageButton cancelBtn = findViewById(R.id.button_cancel_reminder);
+
+        if (mAssignment.reminder == null) {
+            reminderDate.setText(R.string.reminder_null);
+        } else {
+            // Put current reminder datetime in TextView
+            SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy hh:mm", Locale.US);
+            reminderDate.setText(formatter.format(mAssignment.reminder));
+        }
 
         // Create Date and Time Pickers when user set reminder
         setReminderButton.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(mAssignment.reminder);
+            if (mAssignment.reminder != null) {
+                calendar.setTime(mAssignment.reminder);
+            } else {
+                calendar.setTime(new Date());
+            }
             DatePickerDialog reminderDatePicker = new DatePickerDialog(this, this,
                     calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
             editDate = EditDate.REMINDER_DATE;
@@ -283,16 +298,12 @@ public class AssignmentDetailActivity extends AppCompatActivity
 
         });
 
-        // Put current reminder datetime in TextView
-        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy hh:mm", Locale.US);
-        reminderDate.setText(formatter.format(mAssignment.reminder));
-
         // Cancel btn will stop upcoming alarm and reset reminder date
         cancelBtn.setOnClickListener(v -> {
             // Insert magical code that stops service
 
             // Reset reminder
-            mAssignment.reminder = new Date();
+            mAssignment.reminder = null;
             reminderDate.setText("");
         });
     }
@@ -350,7 +361,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
             case REMINDER_DATE:
                 // Save date pick then move on to time
                 Calendar timeCal = Calendar.getInstance();
-                timeCal.setTime(mAssignment.reminder);
+                timeCal.setTime(newDate);
                 TimePickerDialog reminderTimePicker = new TimePickerDialog(this, this,
                     timeCal.get(Calendar.HOUR_OF_DAY),
                     timeCal.get(Calendar.MINUTE),

@@ -49,8 +49,6 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     public LiveData<Assignment> getAssignment(String courseName, String name) {
-//        currentAssignment.setValue(
-//                repository.getAssignment(courseName, name).getValue());
         return repository.getAssignment(courseName, name);
     }
 
