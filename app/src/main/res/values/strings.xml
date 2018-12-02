@@ -43,4 +43,5 @@
     <string name="rename_class">Rename Class</string>
     <string name="recolor_course">Change color</string>
     <string name="invalid_grade">Must enter grade values!</string>
+    <string name="invalid_assignment">Invalid Assignment!</string>
 </resources>

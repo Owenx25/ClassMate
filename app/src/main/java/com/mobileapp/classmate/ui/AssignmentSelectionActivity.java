@@ -13,25 +13,18 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.mobileapp.classmate.R;
-import com.mobileapp.classmate.db.entity.Assignment;
 import com.mobileapp.classmate.db.entity.Course;
 import com.mobileapp.classmate.viewmodel.MainViewModel;
-
-import java.util.Calendar;
-import java.util.Date;
-
-// This activity needs to:
-//      - receive intent data about selected class and color
-//      - call a new adapter
-//      - link to assignment specific pages
 
 public class AssignmentSelectionActivity extends AppCompatActivity {
     // Floating action button for adding assignments
@@ -79,43 +72,65 @@ public class AssignmentSelectionActivity extends AppCompatActivity {
         viewModel.getCourse(courseName).observe(this, courseObserver);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.assignment_selection_settings, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.rename_course:
+                // Fire a dialog for new name
+                return true;
+            case R.id.recolor_course:
+                // fire a dialog for new course color
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+
     private void showAddAssignmentDialog(String courseName) {
-        LayoutInflater layoutInflater = getLayoutInflater();
-        View addAssignmentView = layoutInflater.inflate(R.layout.dialog_add_assignment, null);
-        final AlertDialog alertD = new AlertDialog.Builder(this)
-                .setTitle("Add Assignment")
-                .create();
-        EditText assignmentInput = (EditText) addAssignmentView.findViewById(R.id.assignment_name);
-        assignmentInput.setBackgroundTintList(ColorStateList.valueOf(mCourse.color));
-        assignmentInput.setTextColor(mCourse.color);
-        Button saveBtn = (Button) addAssignmentView.findViewById(R.id.button_add_assignment_save);
-        Button cancelBtn = (Button) addAssignmentView.findViewById(R.id.button_add_assignment_cancel);
+    LayoutInflater layoutInflater = getLayoutInflater();
+    View addAssignmentView = layoutInflater.inflate(R.layout.dialog_add_assignment, null);
+    final AlertDialog alertD = new AlertDialog.Builder(this)
+            .setTitle("Add Assignment")
+            .create();
+    EditText assignmentInput = (EditText) addAssignmentView.findViewById(R.id.assignment_name);
+    assignmentInput.setBackgroundTintList(ColorStateList.valueOf(mCourse.color));
+    assignmentInput.setTextColor(mCourse.color);
+    Button saveBtn = (Button) addAssignmentView.findViewById(R.id.button_add_assignment_save);
+    Button cancelBtn = (Button) addAssignmentView.findViewById(R.id.button_add_assignment_cancel);
 
-        alertD.setView(addAssignmentView);
-        alertD.show();
+    alertD.setView(addAssignmentView);
+    alertD.show();
 
-        // Validate Course inputs and add to DB
-        saveBtn.setOnClickListener(v -> {
-            // Don't let user save if
-            //  - Assignment name is empty
-            //  - Assignment already exists IN CURRENT COURSE
-            if (assignmentInput.getText().toString().matches("") ||
-                    adapter.isCourse(assignmentInput.getText().toString())) {
-                Toast.makeText(this, R.string.invalid_course, Toast.LENGTH_SHORT).show();
-            } else {
+    // Validate Assignment inputs and add to DB
+    saveBtn.setOnClickListener(v -> {
+        // Don't let user save if
+        //  - Assignment name is empty
+        //  - Assignment already exists IN CURRENT COURSE
+        if (assignmentInput.getText().toString().matches("") ||
+                adapter.isAssignment(assignmentInput.getText().toString())) {
+            Toast.makeText(this, R.string.invalid_assignment, Toast.LENGTH_SHORT).show();
+        } else {
 
-                alertD.dismiss();
+            alertD.dismiss();
 
-                // Show assignment activity after creating assignment
-                Context context = this;
-                Intent intent = new Intent(this, AssignmentDetailActivity.class);
-                intent.putExtra("courseName", courseName);
-                intent.putExtra("courseColor", mCourse.color);
-                intent.putExtra("assignmentName", assignmentInput.getText().toString());
-                intent.putExtra("adding", true);
-                context.startActivity(intent);
-            }
-        });
+            // Show assignment activity after creating assignment
+            Context context = this;
+            Intent intent = new Intent(this, AssignmentDetailActivity.class);
+            intent.putExtra("courseName", courseName);
+            intent.putExtra("courseColor", mCourse.color);
+            intent.putExtra("assignmentName", assignmentInput.getText().toString());
+            intent.putExtra("adding", true);
+            context.startActivity(intent);
+        }
+    });
 
         // Quit on cancel press
         cancelBtn.setOnClickListener(v -> alertD.dismiss());

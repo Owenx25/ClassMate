@@ -131,9 +131,9 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
         notifyDataSetChanged();
     }
 
-    public boolean isCourse(String courseName) {
+    public boolean isAssignment(String name) {
         for (Assignment assignment: mAssignments) {
-            if (assignment.className.equals(courseName))
+            if (assignment.name.equals(name))
                 return true;
         }
         return false;
