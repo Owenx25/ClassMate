@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:longClickable="true">
+    android:longClickable="true"
+    android:orientation="vertical">
+
     <LinearLayout
         android:id="@+id/class_name_textView_border"
         android:layout_width="match_parent"
@@ -12,15 +14,18 @@
         android:orientation="vertical">
         <TextView
             android:id="@+id/class_name_textView"
-            android:layout_width="fill_parent"
-            android:textAppearance="@color/colorBlack"
-            android:typeface="serif"
-            android:textSize="30sp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/smallest_padding"
             android:background="@drawable/back"
+            android:drawableStart="@drawable/icon_classmate"
+            android:paddingRight="@android:dimen/app_icon_size"
             android:gravity="center"
-            android:layout_margin="@dimen/smallest_padding"/>
+            android:textAppearance="@color/colorBlack"
+            android:textSize="30sp"
+            android:typeface="serif" />
     </LinearLayout>
 </LinearLayout>
+
 
 
