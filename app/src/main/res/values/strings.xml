@@ -37,6 +37,7 @@
     <string name="days_left_one">Due tommorow!</string>
     <string name="days_left_zero">Due today!</string>
     <string name="one_hundred">100</string>
-    <string name="out_of">out of</string>
+    <string name="grade_value">"%1$d out of %2$d "</string>
     <string name="button_complete">Completed on %1$s</string>
+    <string name="out_of">out of</string>
 </resources>

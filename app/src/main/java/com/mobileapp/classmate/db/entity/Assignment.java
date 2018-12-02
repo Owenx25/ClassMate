@@ -14,7 +14,7 @@ import java.util.Date;
 public class Assignment {
     public Assignment(@NonNull String name, @NonNull String className, int priority,
                       Date dueDate,Date createDate, Date completeDate, boolean isComplete, Date reminder,
-                      @NonNull String description, int grade){
+                      @NonNull String description, int grade, int maxGrade){
         this.name = name;
         this.className = className;
         this.priority = priority;
@@ -25,6 +25,7 @@ public class Assignment {
         this.reminder = reminder;
         this.description = description;
         this.grade = grade;
+        this.maxGrade = maxGrade;
     }
 
     @PrimaryKey(autoGenerate = true)
@@ -40,4 +41,5 @@ public class Assignment {
     public Date reminder;
     public String description;
     public int grade;
+    public int maxGrade;
 }
