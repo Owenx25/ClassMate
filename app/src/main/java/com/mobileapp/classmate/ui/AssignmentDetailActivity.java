@@ -458,7 +458,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
         /**** NEED TO START ALARM SERVICE HERE ****/
     }
 
-    private static Date resetTime(Date date) {
+    public static Date resetTime(Date date) {
         Calendar c = Calendar.getInstance();
         c.setTime(date);
         c.set(Calendar.HOUR_OF_DAY, 0);

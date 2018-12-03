@@ -30,10 +30,6 @@ public class MainViewModel extends AndroidViewModel {
         return allAssignments;
     }
 
-    public LiveData<List<Assignment>> getTomorrowAssignments() {
-        return tomorrowAssignments;
-    }
-
     public LiveData<List<Course>> getAllCourses() {
         return allCourses;
     }

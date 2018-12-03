@@ -22,15 +22,12 @@ public class ClassmateRepository {
 
     private LiveData<List<Course>> mAllClasses;
     private LiveData<List<Assignment>> mAllAssignments;
-    private LiveData<List<Assignment>> mTomorrowAssignments;
-
 
     public ClassmateRepository(Application application) {
         ClassmateRoomDatabase db = ClassmateRoomDatabase.getDatabase(application);
         mCourseDao = db.courseDao();
         mAssignmentDao = db.assignmentDao();
         mAllAssignments = mAssignmentDao.loadAllAssignments();
-        mTomorrowAssignments = mAssignmentDao.getDueTomorrow(new java.sql.Date((new Date()).getTime() + 86400001).toString());
         mAllClasses = mCourseDao.loadAllClasses();
     }
 
@@ -53,12 +50,6 @@ public class ClassmateRepository {
     public LiveData<Assignment> getAssignment(String courseName, String name) {
         return mAssignmentDao.getAssignment(courseName, name);
     }
-
-
-    public LiveData<List<Assignment>> getTomorrowAssignments() {
-        return mTomorrowAssignments;
-    }
-
 
     public void insertAssignment(Assignment assignment) {
         new insertAssignmentAsyncTask(mAssignmentDao).execute(assignment);

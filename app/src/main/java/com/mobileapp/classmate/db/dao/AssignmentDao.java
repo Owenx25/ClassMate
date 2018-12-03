@@ -42,9 +42,6 @@ public interface AssignmentDao {
     @Query("SELECT * FROM Assignments WHERE className LIKE '%' || :courseName || '%' AND name LIKE '%' || :name || '%'")
     LiveData<Assignment> getAssignment(String courseName, String name);
 
-    @Query("SELECT * FROM Assignments WHERE className LIKE '%' || :courseName || '%' AND name LIKE '%' || :name || '%'")
-    Assignment getMutableAssignment(String courseName, String name);
-
     @Query("SELECT * FROM Assignments ORDER BY className ASC")
     LiveData<List<Assignment>> loadAllAssignments();
 
@@ -66,11 +63,5 @@ public interface AssignmentDao {
 
     @Query("UPDATE Assignments SET priority = :priority WHERE id = :id")
     void updateAssignmentPriority(int id, int priority);
-
-    //@Query("SELECT * FROM Assignments WHERE dueDate <= datetime('now','now','+1 day')")
-    @Query("SELECT * FROM Assignments WHERE dueDate <= :due")
-    LiveData<List<Assignment>> getDueTomorrow(String due);
-
-   // @Query("SELECT * FROM Assignments WHERE createDate >= :start AND dueDate <= :end AND NOT isComplete")
-   // List<Assignment> getDueWithin(Date start, Date end);
+    
 }
