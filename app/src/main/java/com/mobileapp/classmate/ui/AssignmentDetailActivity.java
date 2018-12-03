@@ -30,6 +30,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.mobileapp.classmate.R;
 import com.mobileapp.classmate.db.entity.Assignment;
@@ -95,6 +96,20 @@ public class AssignmentDetailActivity extends AppCompatActivity
                 setupCompleteButton();
 
                 setupTitles(courseColor);
+
+                TextView days_left = findViewById(R.id.days_left);
+                Date today = resetTime(new Date());
+                long diffInMillies = mAssignment.dueDate.getTime() - today.getTime();
+                long diff = TimeUnit.DAYS.convert(Math.abs(diffInMillies), TimeUnit.MILLISECONDS);
+                if (diff == 1 && diffInMillies > 0) {
+                    days_left.setText(R.string.days_left_one);
+                } else if (diff == 0) {
+                    days_left.setText(R.string.days_left_zero);
+                } else if (diffInMillies < 0) {
+                    days_left.setText(getString(R.string.days_left_lt_zero, diff));
+                } else {// diff > 1
+                    days_left.setText(getString(R.string.days_left_gt_one, diff));
+                }
 
                 // set action bar
                 ActionBar actionBar = getSupportActionBar();
@@ -353,13 +368,18 @@ public class AssignmentDetailActivity extends AppCompatActivity
         }
 
         saveBtn.setOnClickListener(v -> {
-            mAssignment.isComplete = true;
-            mAssignment.completeDate = resetTime(new Date());
-            mAssignment.grade = Integer.parseInt(gradeInput.getText().toString());
-            mAssignment.maxGrade = Integer.parseInt(maxGradeInput.getText().toString());
-            alertD.dismiss();
-            // force an update to show new button
-            viewModel.updateAssignment(mAssignment);
+            if (gradeInput.getText().toString().matches("") ||
+                    maxGradeInput.getText().toString().matches("")) {
+                Toast.makeText(this, R.string.invalid_grade, Toast.LENGTH_SHORT).show();
+            } else {
+                mAssignment.isComplete = true;
+                mAssignment.completeDate = resetTime(new Date());
+                mAssignment.grade = Integer.parseInt(gradeInput.getText().toString());
+                mAssignment.maxGrade = Integer.parseInt(maxGradeInput.getText().toString());
+                alertD.dismiss();
+                // force an update to show new button
+                viewModel.updateAssignment(mAssignment);
+            }
         });
 
         // Quit on cancel press
@@ -438,7 +458,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
         /**** NEED TO START ALARM SERVICE HERE ****/
     }
 
-    private static Date resetTime(Date date) {
+    public static Date resetTime(Date date) {
         Calendar c = Calendar.getInstance();
         c.setTime(date);
         c.set(Calendar.HOUR_OF_DAY, 0);

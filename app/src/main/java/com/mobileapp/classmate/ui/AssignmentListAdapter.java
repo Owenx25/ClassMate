@@ -3,11 +3,17 @@ package com.mobileapp.classmate.ui;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,32 +22,52 @@ import android.widget.TextView;
 
 import com.mobileapp.classmate.R;
 import com.mobileapp.classmate.db.entity.Assignment;
+import com.mobileapp.classmate.db.entity.Course;
 import com.mobileapp.classmate.viewmodel.MainViewModel;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAdapter.AssignmentViewHolder> {
     class AssignmentViewHolder extends RecyclerView.ViewHolder {
         TextView assignmentItemView;
+        TextView dateItemView;
+        TextView priorityItemView;
         private MainViewModel viewModel;
+        private Course mCourse;
 
+        public void setupObserver(String courseName, AppCompatActivity activity) {
+            // needs to cast to either ViewPagerMainActivity or AssignmentSelectionActivity
+            viewModel = ViewModelProviders.of(activity)
+                    .get(MainViewModel.class);
+            final Observer<Course> courseObserver = course -> mCourse = course;
+            viewModel.getCourse(courseName).observe(activity, courseObserver);
+        }
+
+        public void setupObserver(String courseName, FragmentActivity activity) {
+            // needs to cast to either ViewPagerMainActivity or AssignmentSelectionActivity
+            viewModel = ViewModelProviders.of(activity)
+                    .get(MainViewModel.class);
+            final Observer<Course> courseObserver = course -> mCourse = course;
+            viewModel.getCourse(courseName).observe(activity, courseObserver);
+        }
 
         private AssignmentViewHolder(View itemView) {
             super(itemView);
             assignmentItemView = itemView.findViewById(R.id.assignment_name_textView);
+            dateItemView = itemView.findViewById(R.id.assignment_listItem_Due_Date);
+            priorityItemView = itemView.findViewById(R.id.assignment_listItem_priority);
 
             // Open up assignment detail activity
             itemView.setOnClickListener(v -> {
-                Intent currentIntent = ((Activity)v.getContext()).getIntent();
-                Bundle bundle = currentIntent.getExtras();
-                final String courseName = (String)bundle.get("courseName");
-                final int courseColor = (int)bundle.get("courseColor");
-
                 Context context = v.getContext();
                 Intent intent = new Intent(context, AssignmentDetailActivity.class);
-                intent.putExtra("courseName", courseName);
+                intent.putExtra("courseName", mCourse.courseName);
                 // Color is not part of Assignment List activity...
-                intent.putExtra("courseColor", courseColor);
+                intent.putExtra("courseColor", mCourse.color);
                 intent.putExtra("assignmentName", assignmentItemView.getText().toString());
                 intent.putExtra("adding", false);
                 context.startActivity(intent);
@@ -52,14 +78,13 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
                 viewModel = ViewModelProviders.of((AssignmentSelectionActivity)v.getContext())
                         .get(MainViewModel.class);
                 Intent intent = ((Activity)v.getContext()).getIntent();
-                String courseName = intent.getStringExtra("courseName");
                 // show user delete class menu
                 AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext())
                         .setTitle(R.string.dialog_title_delete_assignment);
                 builder.setPositiveButton(R.string.button_delete, (dialog, which) -> {
                     // Delete from DB
                     // Should also delete all Course Assignments
-                    viewModel.deleteAssignment(courseName, assignmentItemView.getText().toString());
+                    viewModel.deleteAssignment(mCourse.courseName, assignmentItemView.getText().toString());
                 });
                 builder.setNegativeButton(R.string.button_cancel, (dialog, which) -> {});
                 AlertDialog dialog = builder.create();
@@ -71,9 +96,17 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
 
     private int assigmentItemLayout;
     private List<Assignment> mAssignments;
+    private AppCompatActivity mActivity;
+    private FragmentActivity mFragment;
 
-    AssignmentListAdapter(int layoutId) {
+    AssignmentListAdapter(int layoutId, AppCompatActivity activity) {
         assigmentItemLayout = layoutId;
+        mActivity = activity;
+    }
+
+    AssignmentListAdapter(int layoutId, FragmentActivity fragment) {
+        assigmentItemLayout = layoutId;
+        mFragment = fragment;
     }
 
     @Override
@@ -88,7 +121,43 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
     public void onBindViewHolder(@NonNull AssignmentViewHolder holder, int position) {
         if (mAssignments != null) {
             Assignment current = mAssignments.get(position);
+            SimpleDateFormat formatter = new SimpleDateFormat("MM/dd", Locale.US);
+            String formattedDate = formatter.format(current.dueDate);
+
+            int color_red = 0;
+            int color_grey = 0;
+            if (mFragment == null) {
+                color_red = mActivity.getResources().getColor(android.R.color.holo_red_dark);
+                color_grey = mActivity.getResources().getColor(R.color.colorDarkGrey);
+                holder.setupObserver(current.className, mActivity);
+                holder.priorityItemView.setText(
+                        mActivity.getResources().getStringArray(R.array.priority_array)[current.priority]);
+            } else {
+                color_red = mFragment.getResources().getColor(android.R.color.holo_red_dark);
+                color_grey = mFragment.getResources().getColor(R.color.colorDarkGrey);
+                holder.setupObserver(current.className, mFragment);
+                holder.priorityItemView.setText(
+                        mFragment.getResources().getStringArray(R.array.priority_array)[current.priority]);
+            }
+            // Top priority assignments should be red
+            if (current.priority == 0) {
+                holder.priorityItemView.setTextColor(color_red);
+            }
+            // Assignments due tommmorow should be red
+            Date today = AssignmentDetailActivity.resetTime(new Date());
+            long diffInMillies = current.dueDate.getTime() - today.getTime();
+            long diff = TimeUnit.DAYS.convert(Math.abs(diffInMillies), TimeUnit.MILLISECONDS);
+            if ((diff == 1 || diffInMillies < 0) && !current.isComplete) {
+                holder.dateItemView.setTextColor(color_red);
+            }
+            if (current.isComplete) {
+                holder.priorityItemView.setTextColor(color_grey);
+                holder.dateItemView.setTextColor(color_grey);
+                holder.assignmentItemView.setTextColor(color_grey);
+            }
+            holder.dateItemView.setText(formattedDate);
             holder.assignmentItemView.setText(current.name);
+
         } else {
             // If there's no data
             holder.assignmentItemView.setText(R.string.empty_assignment_list);
@@ -100,9 +169,9 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
         notifyDataSetChanged();
     }
 
-    public boolean isCourse(String courseName) {
+    public boolean isAssignment(String name) {
         for (Assignment assignment: mAssignments) {
-            if (assignment.className.equals(courseName))
+            if (assignment.name.equals(name))
                 return true;
         }
         return false;

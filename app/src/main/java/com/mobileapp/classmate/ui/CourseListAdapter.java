@@ -92,7 +92,7 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Co
                     R.drawable.icon_english, R.drawable.icon_history,
                     R.drawable.icon_lang, R.drawable.icon_math, R.drawable.icon_music,
                     R.drawable.icon_read, R.drawable.icon_science};
-            
+
             holder.courseItemView.setCompoundDrawablesWithIntrinsicBounds(images[current.icon], 0, 0, 0);
         } else {
             // If there's no data
