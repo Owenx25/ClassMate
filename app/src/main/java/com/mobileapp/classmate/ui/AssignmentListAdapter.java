@@ -32,6 +32,7 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
     class AssignmentViewHolder extends RecyclerView.ViewHolder {
         TextView assignmentItemView;
         TextView dateItemView;
+        TextView priorityItemView;
         private MainViewModel viewModel;
         private Course mCourse;
 
@@ -55,12 +56,10 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
             super(itemView);
             assignmentItemView = itemView.findViewById(R.id.assignment_name_textView);
             dateItemView = itemView.findViewById(R.id.assignment_listItem_Due_Date);
+            priorityItemView = itemView.findViewById(R.id.assignment_listItem_priority);
 
             // Open up assignment detail activity
             itemView.setOnClickListener(v -> {
-
-                Intent currentIntent = ((Activity)v.getContext()).getIntent();
-
                 Context context = v.getContext();
                 Intent intent = new Intent(context, AssignmentDetailActivity.class);
                 intent.putExtra("courseName", mCourse.courseName);
@@ -124,11 +123,16 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
 
             if (mFragment == null) {
                 holder.setupObserver(current.className, mActivity);
+                holder.priorityItemView.setText(
+                        mActivity.getResources().getStringArray(R.array.priority_array)[current.priority]);
             } else {
                 holder.setupObserver(current.className, mFragment);
+                holder.priorityItemView.setText(
+                        mFragment.getResources().getStringArray(R.array.priority_array)[current.priority]);
             }
             holder.dateItemView.setText(formattedDate);
             holder.assignmentItemView.setText(current.name);
+
         } else {
             // If there's no data
             holder.assignmentItemView.setText(R.string.empty_assignment_list);

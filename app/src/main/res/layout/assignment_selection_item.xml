@@ -8,18 +8,28 @@
 
     <TextView
         android:id="@+id/assignment_listItem_Due_Date"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textSize="20sp"
+        android:textColor="@android:color/black"
         android:layout_gravity="center_vertical"
-        android:layout_weight="3"/>
+        android:layout_weight="1"/>
 
     <TextView
         android:id="@+id/assignment_name_textView"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAppearance="@color/colorPrimary"
         android:textSize="25sp"
-        android:layout_weight="1"/>
+        android:layout_weight="3"/>
 
+    <TextView
+        android:id="@+id/assignment_listItem_priority"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:textColor="@android:color/black"
+        android:gravity="end"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"/>
 </LinearLayout>
