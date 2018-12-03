@@ -12,16 +12,18 @@ import java.util.Date;
 @TypeConverters(DateConverter.class)
 @Entity(tableName = "Classes")
 public class Course {
-    public Course(@NonNull String courseName, Date createDate, int color) {
+    public Course(@NonNull String courseName, Date createDate, int color, int icon) {
         this.courseName = courseName;
         this.color = color;
         this.createDate = createDate;
+        this.icon = icon;
     }
 
     public Course() {
         courseName = "";
         color = 0;
         createDate = new Date();
+        icon = 0;
     }
 
     @PrimaryKey(autoGenerate = true)
@@ -30,4 +32,5 @@ public class Course {
     public String courseName;
     public Date createDate;
     public int color;
+    public int icon;
 }

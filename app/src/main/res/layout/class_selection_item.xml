@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/smallest_padding"
             android:background="@drawable/back"
-            android:drawableStart="@drawable/icon_classmate"
+            android:drawableStart="@drawable/icon_pencil"
             android:paddingRight="@android:dimen/app_icon_size"
             android:gravity="center"
             android:textAppearance="@color/colorBlack"

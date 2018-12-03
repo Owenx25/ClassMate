@@ -17,8 +17,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +33,7 @@ import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
 
 import java.util.Date;
 
-public class ClassSelectionPageFragment extends Fragment {
+public class ClassSelectionPageFragment extends Fragment{
     private MainViewModel viewModel;
 
     private int courseColor;
@@ -62,10 +65,17 @@ public class ClassSelectionPageFragment extends Fragment {
                 .create();
         EditText courseInput = (EditText) AddCourseView.findViewById(R.id.course_name);
         Button colorBtn = (Button) AddCourseView.findViewById(R.id.button_color);
+        Spinner spinner = (Spinner) AddCourseView.findViewById(R.id.spinner_icon);
+        SpinnerAdapter adapter = new SpinnerAdapter(activity,
+                new Integer[]{R.drawable.icon_pencil, R.drawable.icon_art, R.drawable.icon_english, R.drawable.icon_history,
+                        R.drawable.icon_lang, R.drawable.icon_math, R.drawable.icon_music,
+                        R.drawable.icon_read, R.drawable.icon_science});
+        spinner.setAdapter(adapter);
+        spinner.setSelection(adapter.getSelectedPosition());
         Button saveBtn = (Button) AddCourseView.findViewById(R.id.button_addcourse_save);
         Button cancelBtn = (Button) AddCourseView.findViewById(R.id.button_addcourse_cancel);
         // OnClick Callbacks
-        final ColorPicker cp = new ColorPicker(activity, 0,0,0);
+        final ColorPicker cp = new ColorPicker(activity, 0, 0, 0);
         cp.enableAutoClose();
 
         alertD.setView(AddCourseView);
@@ -87,6 +97,7 @@ public class ClassSelectionPageFragment extends Fragment {
             cp.show();
         });
 
+
         // Validate Course inputs and add to DB
         saveBtn.setOnClickListener(v -> {
             // Don't let user save if
@@ -96,7 +107,7 @@ public class ClassSelectionPageFragment extends Fragment {
             View colorSquare = alertD.findViewById(R.id.color_square);
             Drawable background = colorSquare.getBackground();
             if (background instanceof ColorDrawable)
-                color = ((ColorDrawable)background).getColor();
+                color = ((ColorDrawable) background).getColor();
 
             if (courseInput.getText().toString().matches("")) {
                 Toast.makeText(activity, R.string.invalid_course, Toast.LENGTH_SHORT).show();
@@ -104,7 +115,7 @@ public class ClassSelectionPageFragment extends Fragment {
                 viewModel.insertCourse(new Course(
                         courseInput.getText().toString(),
                         new Date(),
-                        color));
+                        color, spinner.getSelectedItemPosition()));
                 alertD.dismiss();
             }
         });
@@ -112,4 +123,15 @@ public class ClassSelectionPageFragment extends Fragment {
         // Quit on cancel press
         cancelBtn.setOnClickListener(v -> alertD.dismiss());
     }
+
+//    @Override
+//    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//        mAssignment.priority = pos;
+//        parent.setSelection(pos);
+//    }
+//
+//    @Override
+//    public void onNothingSelected(AdapterView<?> parent) {
+//
+//    }
 }

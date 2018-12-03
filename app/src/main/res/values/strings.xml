@@ -5,6 +5,7 @@
     <string name="add_class_hint">Class Name…</string>
     <string name="button_save">Save</string>
     <string name="color_button">Select Color</string>
+    <string name="icon_button">Select Icon</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="add_course_dialog">Add Class</string>
     <string name="button_cancel">Cancel</string>
@@ -40,4 +41,15 @@
     <string name="grade_value">"%1$d out of %2$d "</string>
     <string name="button_complete">Completed on %1$s</string>
     <string name="out_of">out of</string>
+    <string-array name="icon_array">
+        <item>Art</item>
+        <item>English</item>
+        <item>History</item>
+        <item>Foreign Language</item>
+        <item>General</item>
+        <item>Math</item>
+        <item>Music</item>
+        <item>Reading</item>
+        <item>Science</item>
+    </string-array>
 </resources>

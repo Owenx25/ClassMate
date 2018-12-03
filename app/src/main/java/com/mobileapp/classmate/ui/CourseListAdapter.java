@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -44,7 +46,7 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Co
             });
 
             itemView.setOnLongClickListener(v -> {
-                viewModel = ViewModelProviders.of((ViewPagerMainActivity)v.getContext())
+                viewModel = ViewModelProviders.of((ViewPagerMainActivity) v.getContext())
                         .get(MainViewModel.class);
                 // show user delete class menu
                 AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext())
@@ -54,7 +56,8 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Co
                     // Should also delete all Course Assignments
                     viewModel.deleteCourse(courseItemView.getText().toString());
                 });
-                builder.setNegativeButton(R.string.button_cancel, (dialog, which) -> {});
+                builder.setNegativeButton(R.string.button_cancel, (dialog, which) -> {
+                });
                 AlertDialog dialog = builder.create();
                 dialog.show();
                 return true;
@@ -84,6 +87,13 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Co
             holder.courseItemView.setText(current.courseName);
             holder.courseItemViewBorder.setBackgroundColor(current.color);
             holder.setColor(current.color);
+
+            Integer[] images = new Integer[]{R.drawable.icon_pencil, R.drawable.icon_art,
+                    R.drawable.icon_english, R.drawable.icon_history,
+                    R.drawable.icon_lang, R.drawable.icon_math, R.drawable.icon_music,
+                    R.drawable.icon_read, R.drawable.icon_science};
+            
+            holder.courseItemView.setCompoundDrawablesWithIntrinsicBounds(images[current.icon], 0, 0, 0);
         } else {
             // If there's no data
             holder.courseItemView.setText("No Courses!");
@@ -96,9 +106,9 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Co
     }
 
     public boolean isCourse(String courseName) {
-        for (Course course: mCourses) {
+        for (Course course : mCourses) {
             if (course.courseName.equals(courseName))
-                    return true;
+                return true;
         }
         return false;
     }
