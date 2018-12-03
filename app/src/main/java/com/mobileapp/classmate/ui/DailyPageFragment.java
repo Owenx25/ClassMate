@@ -55,6 +55,8 @@ public class DailyPageFragment extends Fragment {
                 Date today = AssignmentDetailActivity.resetTime(new Date());
                 long diffInMillies = assignment.dueDate.getTime() - today.getTime();
                 long diff = TimeUnit.DAYS.convert(Math.abs(diffInMillies), TimeUnit.MILLISECONDS);
+                if (diff == 1 && diffInMillies < 0)
+                    return true;
                 return diff != 1 && assignment.priority != 0;
             });
             adapter.setAssignments(assignments);

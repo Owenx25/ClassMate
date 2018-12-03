@@ -63,5 +63,5 @@ public interface AssignmentDao {
 
     @Query("UPDATE Assignments SET priority = :priority WHERE id = :id")
     void updateAssignmentPriority(int id, int priority);
-    
+
 }

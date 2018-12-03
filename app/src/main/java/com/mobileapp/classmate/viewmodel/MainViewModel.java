@@ -16,13 +16,11 @@ public class MainViewModel extends AndroidViewModel {
     private ClassmateRepository repository;
     private LiveData<List<Assignment>> allAssignments;
     private LiveData<List<Course>> allCourses;
-    private LiveData<List<Assignment>> tomorrowAssignments;
 
     public MainViewModel(Application application) {
         super(application);
         repository = new ClassmateRepository(application);
         allAssignments = repository.getAllAssignments();
-        tomorrowAssignments = repository.getTomorrowAssignments();
         allCourses = repository.getAllCourses();
     }
 
