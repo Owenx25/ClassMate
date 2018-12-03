@@ -124,28 +124,36 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
             SimpleDateFormat formatter = new SimpleDateFormat("MM/dd", Locale.US);
             String formattedDate = formatter.format(current.dueDate);
 
-            int color = 0;
+            int color_red = 0;
+            int color_grey = 0;
             if (mFragment == null) {
-                color = mActivity.getResources().getColor(android.R.color.holo_red_dark);
+                color_red = mActivity.getResources().getColor(android.R.color.holo_red_dark);
+                color_grey = mActivity.getResources().getColor(R.color.colorDarkGrey);
                 holder.setupObserver(current.className, mActivity);
                 holder.priorityItemView.setText(
                         mActivity.getResources().getStringArray(R.array.priority_array)[current.priority]);
             } else {
-                color = mFragment.getResources().getColor(android.R.color.holo_red_dark);
+                color_red = mFragment.getResources().getColor(android.R.color.holo_red_dark);
+                color_grey = mFragment.getResources().getColor(R.color.colorDarkGrey);
                 holder.setupObserver(current.className, mFragment);
                 holder.priorityItemView.setText(
                         mFragment.getResources().getStringArray(R.array.priority_array)[current.priority]);
             }
             // Top priority assignments should be red
             if (current.priority == 0) {
-                holder.priorityItemView.setTextColor(color);
+                holder.priorityItemView.setTextColor(color_red);
             }
             // Assignments due tommmorow should be red
             Date today = AssignmentDetailActivity.resetTime(new Date());
             long diffInMillies = current.dueDate.getTime() - today.getTime();
             long diff = TimeUnit.DAYS.convert(Math.abs(diffInMillies), TimeUnit.MILLISECONDS);
-            if (diff == 1 && diffInMillies > 0) {
-                holder.dateItemView.setTextColor(color);
+            if ((diff == 1 || diffInMillies < 0) && !current.isComplete) {
+                holder.dateItemView.setTextColor(color_red);
+            }
+            if (current.isComplete) {
+                holder.priorityItemView.setTextColor(color_grey);
+                holder.dateItemView.setTextColor(color_grey);
+                holder.assignmentItemView.setTextColor(color_grey);
             }
             holder.dateItemView.setText(formattedDate);
             holder.assignmentItemView.setText(current.name);
