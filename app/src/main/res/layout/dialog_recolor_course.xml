@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <Button
+        android:id="@+id/button_recolor"
+        android:layout_width="wrap_content"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:text="@string/color_button"
+        android:layout_marginBottom="@dimen/big_padding"
+        android:layout_marginTop="@dimen/big_padding"
+        android:layout_marginStart="20dp"
+        android:textColor="@color/colorWhite"/>
+    <View
+        android:id="@+id/recolor_square"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="@dimen/big_padding"
+        android:background="#000000"
+        android:visibility="visible"
+        android:layout_below="@id/course_name"
+        android:layout_alignParentEnd="true"/>
+    <Button
+        android:id="@+id/button_recolor_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_cancel"
+        android:layout_marginBottom="@dimen/big_padding"
+        android:layout_marginStart="@dimen/big_padding"
+        android:background="@android:color/transparent"
+        android:textColor="@color/colorDialogButtons"
+        android:layout_below="@+id/button_recolor"
+        android:layout_alignParentStart="true"/>
+    <Button
+        android:id="@+id/button_recolor_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_save"
+        android:layout_marginBottom="@dimen/big_padding"
+        android:layout_marginStart="@dimen/big_padding"
+        android:background="@android:color/transparent"
+        android:textColor="@color/colorDialogButtons"
+        android:layout_below="@+id/button_recolor"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>

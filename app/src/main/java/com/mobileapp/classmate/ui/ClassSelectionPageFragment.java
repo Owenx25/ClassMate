@@ -2,11 +2,14 @@ package com.mobileapp.classmate.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
@@ -34,8 +37,8 @@ import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
 import java.util.Date;
 
 public class ClassSelectionPageFragment extends Fragment{
+    final String CHANNEL_ID = "REMINDERS";
     private MainViewModel viewModel;
-
     private int courseColor;
 
     @Override
@@ -123,15 +126,4 @@ public class ClassSelectionPageFragment extends Fragment{
         // Quit on cancel press
         cancelBtn.setOnClickListener(v -> alertD.dismiss());
     }
-
-//    @Override
-//    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//        mAssignment.priority = pos;
-//        parent.setSelection(pos);
-//    }
-//
-//    @Override
-//    public void onNothingSelected(AdapterView<?> parent) {
-//
-//    }
 }

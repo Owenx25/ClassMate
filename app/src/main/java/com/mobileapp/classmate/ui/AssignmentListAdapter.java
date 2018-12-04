@@ -20,6 +20,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mobileapp.classmate.R;
@@ -54,7 +56,6 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
                     .get(MainViewModel.class);
             final Observer<Course> courseObserver = course -> mCourse = course;
             viewModel.getCourse(courseName).observe(activity, courseObserver);
-
         }
 
         public void setupObserver(String courseName, FragmentActivity activity) {
@@ -133,10 +134,9 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
             Assignment current = mAssignments.get(position);
             SimpleDateFormat formatter = new SimpleDateFormat("MM/dd", Locale.US);
             String formattedDate = formatter.format(current.dueDate);
-            int color_red = 0;
-            int color_grey = 0;
-            //final Observer<Course> courseObserver = course -> assignmentItemViewBorder = course;
-            //holder.getCourse(current.className, mActivity).observe();
+
+            int color_red;
+            int color_grey;
             if (mFragment == null) {
                 color_red = mActivity.getResources().getColor(android.R.color.holo_red_dark);
                 color_grey = mActivity.getResources().getColor(R.color.colorDarkGrey);
@@ -149,7 +149,6 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
                 holder.setupObserver(current.className, mFragment);
                 holder.priorityItemView.setText(
                         mFragment.getResources().getStringArray(R.array.priority_array)[current.priority]);
-
             }
             // Top priority assignments should be red
             if (current.priority == 0) {

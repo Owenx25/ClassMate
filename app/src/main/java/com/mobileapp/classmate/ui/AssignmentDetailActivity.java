@@ -1,19 +1,28 @@
 package com.mobileapp.classmate.ui;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -71,6 +80,8 @@ public class AssignmentDetailActivity extends AppCompatActivity
     protected void onCreate(Bundle savedStateInstance) {
         super.onCreate(savedStateInstance);
         setContentView(R.layout.activity_detail_layout);
+
+        createNotificationChannel();
 
         // Get intent information
         Intent intent = getIntent();
@@ -456,6 +467,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
         reminderDate.setText(formatter.format(mAssignment.reminder));
 
         /**** NEED TO START ALARM SERVICE HERE ****/
+        scheduleNotification(this, mAssignment.reminder.getTime(), (int)mAssignment.reminder.getTime());
     }
 
     public static Date resetTime(Date date) {
@@ -466,6 +478,46 @@ public class AssignmentDetailActivity extends AppCompatActivity
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
         return c.getTime();
+    }
+
+    public void scheduleNotification(Context context, long delay, int notificationId) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("ASSIGNMENT REMINDER")
+                .setContentText("An assignment reminder has gone off")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        // This will probably cause crash because its missing the extras
+        Intent intent = new Intent(context, AssignmentDetailActivity.class);
+        PendingIntent activity = PendingIntent.getActivity(context, notificationId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        builder.setContentIntent(activity);
+
+        Notification notification = builder.build();
+
+        Intent notificationIntent = new Intent(context, ReminderPublisher.class);
+        notificationIntent.putExtra(ReminderPublisher.NOTIFICATION_ID, notificationId);
+        notificationIntent.putExtra(ReminderPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        long futureInMillis = delay;
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, futureInMillis, pendingIntent);
+    }
+
+    public void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "assignment_reminder_channel";
+            String description = "";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+
     }
 
 }

@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -27,6 +28,8 @@ import android.widget.Toast;
 import com.mobileapp.classmate.R;
 import com.mobileapp.classmate.db.entity.Course;
 import com.mobileapp.classmate.viewmodel.MainViewModel;
+import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
+import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
 
 import java.util.Date;
 
@@ -92,7 +95,7 @@ public class AssignmentSelectionActivity extends AppCompatActivity {
                 return true;
             case R.id.recolor_course:
                 // fire a dialog for new course color
-                //showRecolorDialog();
+                showRecolorDialog();
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -103,7 +106,7 @@ public class AssignmentSelectionActivity extends AppCompatActivity {
         LayoutInflater layoutInflater = getLayoutInflater();
         View renameCourseView = layoutInflater.inflate(R.layout.dialog_rename_course, null);
         final AlertDialog alertD = new AlertDialog.Builder(this)
-                .setTitle("Rename Assignment")
+                .setTitle("Rename Course")
                 .create();
         Button saveBtn = renameCourseView.findViewById(R.id.button_rename_course_save);
         Button cancelBtn = renameCourseView.findViewById(R.id.button_rename_course_cancel);
@@ -126,6 +129,55 @@ public class AssignmentSelectionActivity extends AppCompatActivity {
                 alertD.dismiss();
 
             }
+        });
+
+        // Quit on cancel press
+        cancelBtn.setOnClickListener(v -> alertD.dismiss());
+    }
+
+    private void showRecolorDialog() {
+        LayoutInflater layoutInflater = getLayoutInflater();
+        View recolorCourseView = layoutInflater.inflate(R.layout.dialog_recolor_course, null);
+        final AlertDialog alertD = new AlertDialog.Builder(this)
+                .setTitle("Recolor Course")
+                .create();
+        Button saveBtn = recolorCourseView.findViewById(R.id.button_recolor_save);
+        Button cancelBtn = recolorCourseView.findViewById(R.id.button_recolor_cancel);
+        Button colorBtn = recolorCourseView.findViewById(R.id.button_recolor);
+        View colorBox = recolorCourseView.findViewById(R.id.recolor_square);
+        colorBox.setBackgroundColor(mCourse.color);
+
+        final ColorPicker cp = new ColorPicker(this, 0, 0, 0);
+        cp.enableAutoClose();
+
+        alertD.setView(recolorCourseView);
+        alertD.show();
+
+        // Show Course add dialog after color is picked
+        cp.setCallback(new ColorPickerCallback() {
+            @Override
+            public void onColorChosen(@ColorInt int color) {
+                alertD.show();
+                View colorSquare = alertD.findViewById(R.id.recolor_square);
+                colorSquare.setBackgroundColor(color);
+            }
+        });
+
+        // Show Color picker on color button press
+        colorBtn.setOnClickListener(v -> {
+            alertD.hide();
+            cp.show();
+        });
+
+        // Validate Course inputs and add to DB
+        saveBtn.setOnClickListener(v -> {
+            Drawable background = colorBox.getBackground();
+            int color = 0;
+            if (background instanceof ColorDrawable)
+                color = ((ColorDrawable) background).getColor();
+            mCourse.color = color;
+            viewModel.updateCourse(mCourse);
+            alertD.dismiss();
         });
 
         // Quit on cancel press
