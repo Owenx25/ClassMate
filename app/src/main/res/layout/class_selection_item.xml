@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_margin="3dip"
+        android:layout_margin="0dp"
         android:orientation="vertical">
         <TextView
             android:id="@+id/class_name_textView"

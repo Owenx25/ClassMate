@@ -3,6 +3,7 @@ package com.mobileapp.classmate.ui;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -18,6 +19,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mobileapp.classmate.R;
@@ -36,8 +38,15 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
         TextView assignmentItemView;
         TextView dateItemView;
         TextView priorityItemView;
+        LinearLayout assignmentItemViewBorder;
         private MainViewModel viewModel;
         private Course mCourse;
+
+        public LiveData<Course> getCourse(String courseName, AppCompatActivity activity){
+            viewModel = ViewModelProviders.of(activity)
+                    .get(MainViewModel.class);
+            return viewModel.getCourse(courseName);
+        }
 
         public void setupObserver(String courseName, AppCompatActivity activity) {
             // needs to cast to either ViewPagerMainActivity or AssignmentSelectionActivity
@@ -45,6 +54,7 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
                     .get(MainViewModel.class);
             final Observer<Course> courseObserver = course -> mCourse = course;
             viewModel.getCourse(courseName).observe(activity, courseObserver);
+
         }
 
         public void setupObserver(String courseName, FragmentActivity activity) {
@@ -60,7 +70,7 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
             assignmentItemView = itemView.findViewById(R.id.assignment_name_textView);
             dateItemView = itemView.findViewById(R.id.assignment_listItem_Due_Date);
             priorityItemView = itemView.findViewById(R.id.assignment_listItem_priority);
-
+            assignmentItemViewBorder = itemView.findViewById(R.id.assignment_name_textView_border);
             // Open up assignment detail activity
             itemView.setOnClickListener(v -> {
                 Context context = v.getContext();
@@ -123,9 +133,10 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
             Assignment current = mAssignments.get(position);
             SimpleDateFormat formatter = new SimpleDateFormat("MM/dd", Locale.US);
             String formattedDate = formatter.format(current.dueDate);
-
             int color_red = 0;
             int color_grey = 0;
+            //final Observer<Course> courseObserver = course -> assignmentItemViewBorder = course;
+            //holder.getCourse(current.className, mActivity).observe();
             if (mFragment == null) {
                 color_red = mActivity.getResources().getColor(android.R.color.holo_red_dark);
                 color_grey = mActivity.getResources().getColor(R.color.colorDarkGrey);
@@ -138,6 +149,7 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
                 holder.setupObserver(current.className, mFragment);
                 holder.priorityItemView.setText(
                         mFragment.getResources().getStringArray(R.array.priority_array)[current.priority]);
+
             }
             // Top priority assignments should be red
             if (current.priority == 0) {
@@ -157,7 +169,8 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
             }
             holder.dateItemView.setText(formattedDate);
             holder.assignmentItemView.setText(current.name);
-
+            //CONTINUE WORKING HERE: current.className
+          //  holder.assignmentItemViewBorder.setBackgroundColor(color_red);
         } else {
             // If there's no data
             holder.assignmentItemView.setText(R.string.empty_assignment_list);
