@@ -212,8 +212,8 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_below="@id/text_create_date"/>
+                android:layout_height="100dp"
+                android:layout_below="@id/text_grade"/>
         </RelativeLayout>
     </ScrollView>
 
