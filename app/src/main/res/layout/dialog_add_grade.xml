@@ -41,21 +41,28 @@
         android:layout_height="wrap_content"
         android:text="@string/button_cancel"
         android:layout_marginBottom="@dimen/big_padding"
-        android:layout_marginStart="@dimen/big_padding"
         android:background="@android:color/transparent"
         android:textColor="@color/colorDialogButtons"
-        android:layout_below="@+id/grade_points"
-        android:layout_alignParentStart="true"/>
+        android:layout_below="@id/grade_points"
+        android:layout_alignParentStart="true" />
+    <Button
+        android:id="@+id/button_no_grade"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_grade"
+        android:layout_marginBottom="@dimen/big_padding"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/grade_points"
+        android:background="@android:color/transparent"
+        android:textColor="@color/colorDialogButtons" />
     <Button
         android:id="@+id/button_add_grade_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/grade_points"
         android:text="@string/button_save"
         android:layout_marginBottom="@dimen/big_padding"
-        android:layout_marginStart="@dimen/big_padding"
         android:background="@android:color/transparent"
         android:textColor="@color/colorDialogButtons"
-        android:layout_below="@+id/grade_points"
         android:layout_alignParentEnd="true" />
-
 </android.widget.RelativeLayout>

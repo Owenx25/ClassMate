@@ -188,19 +188,32 @@
 
             <TextView
                 android:id="@+id/text_grade"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 android:textSize="24sp"
                 android:textColor="@android:color/holo_green_dark"
+                android:layout_below="@id/title_grade"
+                android:layout_alignParentStart="true"
                 android:textStyle="bold"
-                android:visibility="gone"
-                android:layout_below="@id/title_grade"/>
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/button_set_grade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/set_grade"
+                android:layout_margin="16dp"
+                android:layout_below="@id/title_grade"
+                android:layout_toEndOf="@id/text_grade"
+                android:layout_alignBaseline="@id/text_grade"
+                android:layout_alignParentEnd="true"
+                android:visibility="gone"/>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="85dp"
-                android:layout_below="@id/text_grade"/>
+                android:layout_height="200dp"
+                android:layout_below="@id/text_create_date"/>
         </RelativeLayout>
     </ScrollView>
 

@@ -149,7 +149,7 @@ public class AssignmentDetailActivity extends AppCompatActivity
                     false,
                     null,
                     "",
-                    0, 0);
+                    -1, 0);
             viewModel.insertAssignment(mAssignment);
         } else {
             viewModel.getAssignment(courseName, assignmentName);
@@ -356,6 +356,8 @@ public class AssignmentDetailActivity extends AppCompatActivity
         EditText maxGradeInput = addGradeView.findViewById(R.id.max_grade_points);
         Button saveBtn = addGradeView.findViewById(R.id.button_add_grade_save);
         Button cancelBtn = addGradeView.findViewById(R.id.button_add_grade_cancel);
+        Button noGradeBtn = addGradeView.findViewById(R.id.button_no_grade);
+        Button setGradeBtn = findViewById(R.id.button_set_grade);
         Button completeBtn = findViewById(R.id.button_mark_complete);
 
         alertD.setView(addGradeView);
@@ -372,19 +374,38 @@ public class AssignmentDetailActivity extends AppCompatActivity
 
             // Make grade component visible
             TextView grade = findViewById(R.id.text_grade);
-            grade.setVisibility(View.VISIBLE);
-            grade.setText(getString(R.string.grade_value, mAssignment.grade, mAssignment.maxGrade));
+            if (mAssignment.grade != -1) {
+                grade.setVisibility(View.VISIBLE);
+                grade.setText(getString(R.string.grade_value, mAssignment.grade, mAssignment.maxGrade));
+            }
+            setGradeBtn.setVisibility(View.VISIBLE);
             findViewById(R.id.title_grade).setVisibility(View.VISIBLE);
             findViewById(R.id.underline_grade).setVisibility(View.VISIBLE);
         }
+
+        noGradeBtn.setOnClickListener(v -> {
+            if (!mAssignment.isComplete) {
+                mAssignment.isComplete = true;
+                mAssignment.completeDate = resetTime(new Date());
+                viewModel.updateAssignment(mAssignment);
+                gradeInput.setText(R.string.no_grade_yet);
+            }
+            alertD.dismiss();
+        });
+
+        setGradeBtn.setOnClickListener(v -> {
+            alertD.show();
+        });
 
         saveBtn.setOnClickListener(v -> {
             if (gradeInput.getText().toString().matches("") ||
                     maxGradeInput.getText().toString().matches("")) {
                 Toast.makeText(this, R.string.invalid_grade, Toast.LENGTH_SHORT).show();
             } else {
-                mAssignment.isComplete = true;
-                mAssignment.completeDate = resetTime(new Date());
+                if (!mAssignment.isComplete) {
+                    mAssignment.isComplete = true;
+                    mAssignment.completeDate = resetTime(new Date());
+                }
                 mAssignment.grade = Integer.parseInt(gradeInput.getText().toString());
                 mAssignment.maxGrade = Integer.parseInt(maxGradeInput.getText().toString());
                 alertD.dismiss();

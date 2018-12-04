@@ -45,4 +45,7 @@
     <string name="recolor_course">Change color</string>
     <string name="invalid_grade">Must enter grade values!</string>
     <string name="invalid_assignment">Invalid Assignment!</string>
+    <string name="no_grade">No-Grade</string>
+    <string name="set_grade">Set Grade</string>
+    <string name="no_grade_yet">No grade yet!</string>
 </resources>
