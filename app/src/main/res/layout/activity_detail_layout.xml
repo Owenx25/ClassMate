@@ -213,7 +213,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:layout_below="@id/text_grade"/>
+                android:layout_below="@id/button_set_grade"/>
         </RelativeLayout>
     </ScrollView>
 
