@@ -44,13 +44,7 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
         private MainViewModel viewModel;
         private Course mCourse;
 
-        public LiveData<Course> getCourse(String courseName, AppCompatActivity activity){
-            viewModel = ViewModelProviders.of(activity)
-                    .get(MainViewModel.class);
-            return viewModel.getCourse(courseName);
-        }
-
-        public void setupObserver(String courseName, AppCompatActivity activity) {
+        void setupObserver(String courseName, AppCompatActivity activity) {
             // needs to cast to either ViewPagerMainActivity or AssignmentSelectionActivity
             viewModel = ViewModelProviders.of(activity)
                     .get(MainViewModel.class);
@@ -58,7 +52,7 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
             viewModel.getCourse(courseName).observe(activity, courseObserver);
         }
 
-        public void setupObserver(String courseName, FragmentActivity activity) {
+        void setupObserver(String courseName, FragmentActivity activity) {
             // needs to cast to either ViewPagerMainActivity or AssignmentSelectionActivity
             viewModel = ViewModelProviders.of(activity)
                     .get(MainViewModel.class);
@@ -86,9 +80,14 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
 
             // Allow user to delete assignment on long click
             itemView.setOnLongClickListener(v -> {
-                viewModel = ViewModelProviders.of((AssignmentSelectionActivity)v.getContext())
-                        .get(MainViewModel.class);
-                Intent intent = ((Activity)v.getContext()).getIntent();
+                if (v.getContext() instanceof  AssignmentSelectionActivity) {
+                    viewModel = ViewModelProviders.of((AssignmentSelectionActivity) v.getContext())
+                            .get(MainViewModel.class);
+                } else {
+                    viewModel = ViewModelProviders.of((ViewPagerMainActivity) v.getContext())
+                            .get(MainViewModel.class);
+                }
+                Intent intent = ((Activity) v.getContext()).getIntent();
                 // show user delete class menu
                 AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext())
                         .setTitle(R.string.dialog_title_delete_assignment);
@@ -97,7 +96,8 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
                     // Should also delete all Course Assignments
                     viewModel.deleteAssignment(mCourse.courseName, assignmentItemView.getText().toString());
                 });
-                builder.setNegativeButton(R.string.button_cancel, (dialog, which) -> {});
+                builder.setNegativeButton(R.string.button_cancel, (dialog, which) -> {
+                });
                 AlertDialog dialog = builder.create();
                 dialog.show();
                 return true;
@@ -181,7 +181,7 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
         notifyDataSetChanged();
     }
 
-    public boolean isAssignment(String name) {
+    boolean isAssignment(String name) {
         for (Assignment assignment: mAssignments) {
             if (assignment.name.equals(name))
                 return true;
