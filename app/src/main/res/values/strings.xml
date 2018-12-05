@@ -48,4 +48,5 @@
     <string name="no_grade">No-Grade</string>
     <string name="set_grade">Set Grade</string>
     <string name="no_grade_yet">No grade yet!</string>
+    <string name="notification_message">A reminder for %1$s from %2$s class has gone off!</string>
 </resources>

@@ -73,6 +73,11 @@ public class AssignmentDetailActivity extends AppCompatActivity
     private MainViewModel viewModel;
     private Assignment mAssignment;
 
+    String courseName;
+    int courseColor ;
+    String assignmentName;
+    Boolean isNewAssignment;
+
     private Date newDate;
     EditDate editDate;
 
@@ -86,10 +91,10 @@ public class AssignmentDetailActivity extends AppCompatActivity
         // Get intent information
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        final String courseName = (String)bundle.get("courseName");
-        final int courseColor = (int)bundle.get("courseColor");
-        final String assignmentName = (String)bundle.get("assignmentName");
-        final Boolean isNewAssignment = (Boolean)bundle.get("adding");
+        courseName = (String)bundle.get("courseName");
+        courseColor = (int)bundle.get("courseColor");
+        assignmentName = (String)bundle.get("assignmentName");
+        isNewAssignment = (Boolean)bundle.get("adding");
 
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         // Pull Assignment Information by using entry with
@@ -195,7 +200,9 @@ public class AssignmentDetailActivity extends AppCompatActivity
                 mSpinner.setEnabled(false);
                 completeBtn.setEnabled(true);
                 cancelBtn.setVisibility(View.GONE);
-
+                if(mAssignment.reminder != null) {
+                    scheduleNotification(this, mAssignment.reminder.getTime(), (int) mAssignment.reminder.getTime());
+                }
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(mFab.getWindowToken(), 0);
                 /* !!! NEED TO SEND NEW DATA TO DB HERE !!! */
@@ -459,11 +466,13 @@ public class AssignmentDetailActivity extends AppCompatActivity
                 break;
             case REMINDER_DATE:
                 // Save date pick then move on to time
+                Calendar todayCal = Calendar.getInstance();
+                todayCal.setTime(new Date());
                 Calendar timeCal = Calendar.getInstance();
                 timeCal.setTime(newDate);
                 TimePickerDialog reminderTimePicker = new TimePickerDialog(this, this,
-                    timeCal.get(Calendar.HOUR_OF_DAY),
-                    timeCal.get(Calendar.MINUTE),
+                    todayCal.get(Calendar.HOUR_OF_DAY),
+                    todayCal.get(Calendar.MINUTE),
                     false);
                 reminderTimePicker.show();
                 break;
@@ -486,9 +495,6 @@ public class AssignmentDetailActivity extends AppCompatActivity
         // Put current reminder datetime in TextView
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy hh:mm", Locale.US);
         reminderDate.setText(formatter.format(mAssignment.reminder));
-
-        /**** NEED TO START ALARM SERVICE HERE ****/
-        scheduleNotification(this, mAssignment.reminder.getTime(), (int)mAssignment.reminder.getTime());
     }
 
     public static Date resetTime(Date date) {
@@ -504,11 +510,16 @@ public class AssignmentDetailActivity extends AppCompatActivity
     public void scheduleNotification(Context context, long delay, int notificationId) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("ASSIGNMENT REMINDER")
-                .setContentText("An assignment reminder has gone off")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setContentText(getString(R.string.notification_message, assignmentName, courseName))
+                .setSmallIcon(R.drawable.icon_pencil)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setColor(courseColor);
 
-        // This will probably cause crash because its missing the extras
         Intent intent = new Intent(context, AssignmentDetailActivity.class);
+        intent.putExtra("courseName", courseName);
+        intent.putExtra("courseColor", courseColor);
+        intent.putExtra("assignmentName", assignmentName);
+        intent.putExtra("adding", isNewAssignment);
         PendingIntent activity = PendingIntent.getActivity(context, notificationId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         builder.setContentIntent(activity);
 
@@ -519,9 +530,8 @@ public class AssignmentDetailActivity extends AppCompatActivity
         notificationIntent.putExtra(ReminderPublisher.NOTIFICATION, notification);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        long futureInMillis = delay;
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, futureInMillis, pendingIntent);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, delay, pendingIntent);
     }
 
     public void createNotificationChannel() {
@@ -538,7 +548,5 @@ public class AssignmentDetailActivity extends AppCompatActivity
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
-
     }
-
 }
